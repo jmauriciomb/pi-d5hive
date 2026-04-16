@@ -7,3 +7,10 @@ secrets/
 
 
 .DS_Store
+
+# Large data files
+*.gpkg
+*.shp
+*.dbf
+*.shx
+*.prj
