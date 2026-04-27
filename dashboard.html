@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>d5hive · dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0e0e;
+    --surface: #161616;
+    --surface2: #1f1f1f;
+    --border: #2a2a2a;
+    --border2: #333;
+    --text: #e8e8e8;
+    --text2: #888;
+    --text3: #555;
+    --green: #4ade80;
+    --green-dim: #1a3a26;
+    --amber: #fbbf24;
+    --amber-dim: #3a2e0a;
+    --red: #f87171;
+    --red-dim: #3a1a1a;
+    --blue: #60a5fa;
+    --blue-dim: #1a2a3a;
+    --accent: #4ade80;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14px;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* TOP BAR */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 28px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  .topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+  }
+
+  .logo span {
+    color: var(--text2);
+    font-weight: 400;
+  }
+
+  .divider-v {
+    width: 1px;
+    height: 16px;
+    background: var(--border2);
+  }
+
+  .topbar-title {
+    font-size: 13px;
+    color: var(--text2);
+    font-weight: 300;
+  }
+
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .pulse-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2s infinite;
+  }
+
+  .pulse-dot.offline { background: var(--red); animation: none; }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .topbar-host {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text3);
+  }
+
+  /* MAIN LAYOUT */
+  .main {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    min-height: calc(100vh - 49px);
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    border-right: 1px solid var(--border);
+    padding: 20px 0;
+    background: var(--surface);
+  }
+
+  .sidebar-section {
+    padding: 0 20px;
+    margin-bottom: 24px;
+  }
+
+  .sidebar-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .stat-block {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 12px;
+    margin-bottom: 6px;
+  }
+
+  .stat-block .s-label {
+    font-size: 11px;
+    color: var(--text3);
+    margin-bottom: 3px;
+  }
+
+  .stat-block .s-value {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--text);
+    word-break: break-all;
+  }
+
+  .stat-block .s-value.ok { color: var(--green); }
+  .stat-block .s-value.warn { color: var(--amber); }
+
+  /* CONTENT */
+  .content {
+    padding: 24px 28px;
+  }
+
+  .content-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .content-header h2 {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .btn {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 4px;
+    border: 1px solid var(--border2);
+    background: transparent;
+    color: var(--text2);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+  .btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .btn:disabled:hover { border-color: var(--border2); color: var(--text2); }
+
+  .btn-primary {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* PIPELINE CARD */
+  .pipeline-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .pipeline-card:hover { border-color: var(--border2); }
+  .pipeline-card.running { border-color: var(--amber); }
+  .pipeline-card.done { border-color: var(--green); }
+  .pipeline-card.error { border-color: var(--red); }
+
+  .pipeline-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    cursor: pointer;
+  }
+
+  .pipeline-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    flex-shrink: 0;
+  }
+
+  .pipeline-info { flex: 1; }
+
+  .pipeline-name {
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+
+  .pipeline-desc {
+    font-size: 12px;
+    color: var(--text2);
+  }
+
+  .badge {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 3px;
+    letter-spacing: 0.05em;
+  }
+
+  .badge-idle { background: var(--surface2); color: var(--text3); border: 1px solid var(--border); }
+  .badge-running { background: var(--amber-dim); color: var(--amber); border: 1px solid var(--amber); }
+  .badge-ok { background: var(--green-dim); color: var(--green); border: 1px solid var(--green); }
+  .badge-error { background: var(--red-dim); color: var(--red); border: 1px solid var(--red); }
+
+  .pipeline-time {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text3);
+    min-width: 50px;
+    text-align: right;
+  }
+
+  .pipeline-body {
+    border-top: 1px solid var(--border);
+    padding: 14px 16px;
+    display: none;
+  }
+
+  .pipeline-body.open { display: block; }
+
+  .pipeline-actions {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  /* LOG */
+  .log {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text2);
+    min-height: 80px;
+    max-height: 220px;
+    overflow-y: auto;
+    line-height: 1.6;
+  }
+
+  .log-line { display: block; }
+  .log-line.ok { color: var(--green); }
+  .log-line.err { color: var(--red); }
+  .log-line.info { color: var(--blue); }
+  .log-line.dim { color: var(--text3); }
+
+  /* BOTTOM STATUS */
+  .statusbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 6px 28px;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text3);
+  }
+
+  .statusbar span { display: flex; align-items: center; gap: 6px; }
+
+  /* SPINNER */
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spinner {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border: 1.5px solid var(--border2);
+    border-top-color: var(--amber);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    vertical-align: middle;
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+  pb { padding-bottom: 60px; display: block; }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="logo">d5<span>hive</span></div>
+    <div class="divider-v"></div>
+    <div class="topbar-title">pipeline dashboard</div>
+  </div>
+  <div class="topbar-right">
+    <div class="pulse-dot" id="pulse"></div>
+    <div class="topbar-host" id="top-host">connecting...</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">system</div>
+      <div class="stat-block">
+        <div class="s-label">status</div>
+        <div class="s-value ok" id="sb-status">—</div>
+      </div>
+      <div class="stat-block">
+        <div class="s-label">environment</div>
+        <div class="s-value" id="sb-env">—</div>
+      </div>
+      <div class="stat-block">
+        <div class="s-label">host</div>
+        <div class="s-value" id="sb-host">—</div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">last run</div>
+      <div class="stat-block">
+        <div class="s-label">pipeline</div>
+        <div class="s-value" id="sb-pipeline">—</div>
+      </div>
+      <div class="stat-block">
+        <div class="s-label">time</div>
+        <div class="s-value" id="sb-time">—</div>
+      </div>
+      <div class="stat-block">
+        <div class="s-label">duration</div>
+        <div class="s-value" id="sb-duration">—</div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <button class="btn" style="width:100%" onclick="fetchStatus()">↺ refresh</button>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+    <div class="content-header">
+      <h2>pipelines</h2>
+    </div>
+
+    <!-- JB_GTFS PIPELINE -->
+    <div class="pipeline-card" id="card-gtfs">
+      <div class="pipeline-header" onclick="toggleCard('gtfs')">
+        <div class="pipeline-icon">PY</div>
+        <div class="pipeline-info">
+          <div class="pipeline-name">JB_GTFS</div>
+          <div class="pipeline-desc">Metro do Porto · GTFS → MongoDB + CrateDB</div>
+        </div>
+        <span class="badge badge-idle" id="badge-gtfs">idle</span>
+        <div class="pipeline-time" id="time-gtfs">—</div>
+      </div>
+      <div class="pipeline-body" id="body-gtfs">
+        <div class="pipeline-actions">
+          <button class="btn btn-primary" id="btn-gtfs" onclick="runPipeline('gtfs', '/jb_gtfs')">▶ run now</button>
+          <button class="btn" onclick="clearLog('gtfs')">clear log</button>
+        </div>
+        <div class="log" id="log-gtfs">— no output yet —</div>
+      </div>
+    </div>
+
+    <pb></pb>
+  </div>
+</div>
+
+<!-- STATUS BAR -->
+<div class="statusbar">
+  <span id="sbar-refresh">never refreshed</span>
+  <span id="sbar-msg">ready</span>
+</div>
+
+<script>
+  const BASE = '';
+
+  function ts() {
+    return new Date().toLocaleTimeString('en-GB');
+  }
+
+  function setStatus(msg) {
+    document.getElementById('sbar-msg').textContent = msg;
+  }
+
+  function appendLog(id, text, cls) {
+    const box = document.getElementById('log-' + id);
+    if (box.textContent === '— no output yet —') box.textContent = '';
+    const lines = text.split('\n');
+    lines.forEach(line => {
+      if (!line.trim()) return;
+      const el = document.createElement('span');
+      el.className = 'log-line' + (cls ? ' ' + cls : '');
+      el.textContent = '[' + ts() + '] ' + line;
+      box.appendChild(el);
+      box.appendChild(document.createElement('br'));
+    });
+    box.scrollTop = box.scrollHeight;
+  }
+
+  function clearLog(id) {
+    document.getElementById('log-' + id).textContent = '— no output yet —';
+  }
+
+  function toggleCard(id) {
+    const body = document.getElementById('body-' + id);
+    body.classList.toggle('open');
+  }
+
+  function setBadge(id, state) {
+    const b = document.getElementById('badge-' + id);
+    const c = document.getElementById('card-' + id);
+    b.className = 'badge badge-' + state;
+    b.textContent = state;
+    c.className = 'pipeline-card ' + (state === 'ok' ? 'done' : state === 'idle' ? '' : state);
+  }
+
+  function fetchStatus() {
+    fetch(BASE + '/')
+      .then(r => r.json())
+      .then(d => {
+        document.getElementById('sb-status').textContent = d.status || '—';
+        document.getElementById('sb-env').textContent = d.env || '—';
+        document.getElementById('sb-host').textContent = d.host || '—';
+        document.getElementById('top-host').textContent = d.host || '';
+        document.getElementById('pulse').className = 'pulse-dot';
+        document.getElementById('sbar-refresh').textContent = 'refreshed ' + ts();
+        setStatus('connected');
+      })
+      .catch(() => {
+        document.getElementById('sb-status').textContent = 'offline';
+        document.getElementById('pulse').className = 'pulse-dot offline';
+        setStatus('cannot reach server');
+      });
+  }
+
+  function runPipeline(id, endpoint) {
+    const btn = document.getElementById('btn-' + id);
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> running';
+    setBadge(id, 'running');
+    document.getElementById('body-' + id).classList.add('open');
+    appendLog(id, 'triggering ' + endpoint + '...', 'info');
+
+    const t0 = Date.now();
+
+    fetch(BASE + endpoint, { method: 'POST' })
+      .then(r => r.json())
+      .then(d => {
+        const elapsed = ((Date.now() - t0) / 1000).toFixed(1);
+        document.getElementById('time-' + id).textContent = elapsed + 's';
+
+        // update sidebar last run
+        document.getElementById('sb-pipeline').textContent = id.toUpperCase();
+        document.getElementById('sb-time').textContent = ts();
+        document.getElementById('sb-duration').textContent = elapsed + 's';
+
+        if (d.status === 'started') {
+          setBadge(id, 'running');
+          appendLog(id, 'script launched · pid ' + d.pid, 'ok');
+          appendLog(id, 'running in background — check server logs for full output', 'dim');
+          setBadge(id, 'ok');
+          setStatus('pipeline started (pid ' + d.pid + ')');
+        } else if (d.status === 'completed') {
+          setBadge(id, 'ok');
+          appendLog(id, 'completed in ' + elapsed + 's', 'ok');
+          if (d.stdout) {
+            appendLog(id, '--- stdout ---', 'dim');
+            appendLog(id, d.stdout.slice(-1200));
+          }
+          setStatus('completed in ' + elapsed + 's');
+        } else {
+          setBadge(id, 'error');
+          appendLog(id, 'error: ' + (d.error || d.stderr || JSON.stringify(d)), 'err');
+          setStatus('pipeline error');
+        }
+
+        btn.disabled = false;
+        btn.innerHTML = '▶ run now';
+      })
+      .catch(e => {
+        setBadge(id, 'error');
+        appendLog(id, 'request failed: ' + e, 'err');
+        setStatus('request failed');
+        btn.disabled = false;
+        btn.innerHTML = '▶ run now';
+      });
+  }
+
+  // auto-refresh status every 30s
+  fetchStatus();
+  setInterval(fetchStatus, 30000);
+</script>
+
+</body>
+</html>

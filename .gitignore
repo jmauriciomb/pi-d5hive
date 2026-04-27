@@ -14,5 +14,6 @@ secrets/
 *.dbf
 *.shx
 *.prj
+*.zip
 
 gtfs_data/

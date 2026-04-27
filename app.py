@@ -15,7 +15,7 @@ print(f"Environment: {ENV}, host: {hostname}")
 
 @app.route('/')
 def home():
-    return jsonify({"status": "running", "env": ENV, "host": hostname})
+    return open('dashboard.html').read()
 
 @app.route('/health')
 def health():
