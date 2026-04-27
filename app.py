@@ -24,20 +24,14 @@ def health():
 @app.route('/jb_gtfs', methods=['POST'])
 def jb_gtfs():
     try:
-        result = subprocess.run(
+        proc = subprocess.Popen(
             [sys.executable, 'jb_gtfs.py'],
-            capture_output=True,
-            text=True,
             cwd=os.path.dirname(os.path.abspath(__file__))
         )
-        return jsonify({
-            "status": "completed" if result.returncode == 0 else "error",
-            "returncode": result.returncode,
-            "stdout": result.stdout[-3000:],
-            "stderr": result.stderr[-1000:],
-        }), 200
+        return jsonify({"status": "started", "pid": proc.pid}), 200
     except Exception as e:
         return jsonify({"status": "exception", "error": str(e)}), 500
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))

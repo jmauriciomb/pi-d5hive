@@ -9,7 +9,7 @@ Original file is located at
 ## 1. Imports e deteção de ambiente
 
 Deteção automática do ambiente de execução: `jupyter` (Google Colab) ou `flask` (local/Render).  
-Em ambiente flask, as credenciais são lidas via variáveis de ambiente (`.env` local, dashboard no Render).
+Em ambiente flask, as credenciais são lidas via ficheiros secrets.
 """
 
 import datetime
@@ -326,7 +326,7 @@ for dbname in dblist:
                 )
                 conn.commit()
 
-                clts.elapt[f"... {tablename}: inserted {len(new_rows)}, skipped {skipped}"] = clts.deltat(tstart)
+                clts.elapt[f"... {tablename}: inserted {len(new_rows)}"] = clts.deltat(tstart)
 
             cursor.close()
             conn.close()
