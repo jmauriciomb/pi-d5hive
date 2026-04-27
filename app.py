@@ -25,7 +25,7 @@ def health():
 def jb_gtfs():
     try:
         proc = subprocess.Popen(
-            [sys.executable, 'JB_GTFS.py'],
+            [sys.executable, 'jb_gtfs.py'],
             cwd=os.path.dirname(os.path.abspath(__file__))
         )
         return jsonify({"status": "started", "pid": proc.pid}), 200
