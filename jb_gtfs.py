@@ -35,8 +35,8 @@ except ImportError:
     import clts_pcp as clts
     ENV = "flask"
 
-    # local:  ./secrets/<user>-<host>_<service>.json
-    # render: /etc/secrets/<user>-render_<service>.json
+    # local:  ./secrets/
+    # render: /etc/secrets/
     hostname_short = socket.gethostname()
     if hostname_short[:4] == "srv-":
         secrets_path = "/etc/secrets"
@@ -419,37 +419,3 @@ if send_mail and email_addresses!=[]:
 
 
 print(clts.listtimes())
-
-"""## 7. Flask (local / Render)
-
-Esta célula só é ativa fora do Colab.  
-Ao exportar para `.py` (File → Download → Download .py), este bloco torna o script servível via Flask.
-
-**Variáveis de ambiente necessárias:**
-- `D5_USER` — identificador do utilizador (ex: `JB`)
-- `D5_DATAPATH` — path para os ficheiros de dados (ex: `./data`)
-- `PORT` — porta do servidor (definida automaticamente pelo Render)
-- Credenciais: `JB-dblist.json`, `JB-mongodb.json`, `configGMail_JB.json` (como env vars no Render)
-
-
-if ENV == "flask":
-    from flask import Flask, jsonify
-    app = Flask(__name__)
-
-    @app.route("/health")
-    def health():
-        return jsonify({"status": "alive", "env": ENV, "host": hostname})
-
-    @app.route("/run")
-    def run():
-        # O código das células anteriores já executou ao importar o módulo.
-        # Este endpoint expõe o resultado via REST.
-        return jsonify({
-            "status": "ok",
-            "context": context,
-            "report": clts.listtimes()
-        })
-
-    if __name__ == "__main__":
-        port = int(os.environ.get("PORT", 5000))
-        app.run(host="0.0.0.0", port=port)"""
