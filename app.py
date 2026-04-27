@@ -25,7 +25,7 @@ def health():
 def jb_gtfs():
     try:
         result = subprocess.run(
-            [sys.executable, 'JB_GTFS.py'],
+            [sys.executable, 'jb_gtfs.py'],
             capture_output=True,
             text=True,
             cwd=os.path.dirname(os.path.abspath(__file__))
