@@ -15,7 +15,6 @@ Em ambiente flask, as credenciais são lidas via ficheiros secrets.
 import datetime
 import json
 import requests
-import math
 import types
 import socket
 import os
@@ -210,9 +209,11 @@ Para cada tuplo (`user`, `base de dados`), deverá haver um ficheiro de credenci
 """
 
 # The script have to be parametrized by 'User' (so the script could be portable between users)
+# The script have to be parametrized by 'User' (so the script could be portable between users)
 
 from pymongo import MongoClient
 import psycopg2
+
 
 clts.elapt[f"Starting database accesses:"] = clts.deltat(tstart)
 
@@ -285,7 +286,7 @@ for dbname in dblist:
                     collection.insert_many(docs)
 
 
-                clts.elapt[f"... {colname}: inserted {len(docs)}, skipped {skipped}"] = clts.deltat(tstart)
+                clts.elapt[f"... [{dbname}] {colname}: inserted {len(docs)}, skipped {skipped}"] = clts.deltat(tstart)
 
             status = "ok"
 
@@ -305,6 +306,7 @@ for dbname in dblist:
             print("schema atual:", cursor.fetchone())
 
             clts.elapt[f"... connected to `{dbname}` (CrateDB)"] = clts.deltat(tstart)
+            from psycopg2.extras import execute_values
 
             for (tablename, df, key) in gtfs_tables:
                 print(f"\nProcessing {tablename}...")
@@ -315,18 +317,23 @@ for dbname in dblist:
 
                 cols = list(new_rows.columns)
                 columns_sql = ", ".join(cols)
-                values = [tuple(row) for _, row in new_rows.iterrows()]
+                values = list(new_rows.itertuples(index=False, name=None))
 
-                # bulk insert
-                from psycopg2.extras import execute_values
-                execute_values(
+                # Bulk insert with RETURNING 1 and fetch=True
+                # 'RETURNING 1' simply returns the number '1' for every successful insert
+                inserted_records = execute_values(
                     cursor,
-                    f"INSERT INTO {tablename} ({columns_sql}) VALUES %s ON CONFLICT DO NOTHING",
-                    values
+                    f"INSERT INTO {tablename} ({columns_sql}) VALUES %s ON CONFLICT DO NOTHING RETURNING 1",
+                    values,
+                    fetch=True
                 )
                 conn.commit()
 
-                clts.elapt[f"... {tablename}: inserted {len(new_rows)}"] = clts.deltat(tstart)
+                # The length of the returned list is your exact, accurate insert count
+                inserted = len(inserted_records) if inserted_records else 0
+                skipped = len(new_rows) - inserted
+
+                clts.elapt[f"... [{dbname}] {tablename}: inserted {inserted}, skipped {skipped}"] = clts.deltat(tstart)
 
             cursor.close()
             conn.close()
