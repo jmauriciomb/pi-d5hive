@@ -1,0 +1,8 @@
+{
+  "jb_gtfs": {
+    "call": "python",
+    "script": "JB_GTFS.py",
+    "period": 1440,
+    "lrun": "2025-01-01 00:00:00"  
+  }
+}

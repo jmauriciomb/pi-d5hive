@@ -32,12 +32,19 @@ try:
     ENV = "jupyter"
 except ImportError:
     # Ambiente flask
-    from dotenv import load_dotenv
-    load_dotenv()
     import clts_pcp as clts
-    userdata = types.SimpleNamespace()
-    userdata.get = lambda key: os.environ.get(key)
     ENV = "flask"
+
+    # local:  ./secrets/<user>-<host>_<service>.json
+    # render: /etc/secrets/<user>-render_<service>.json
+    hostname_short = socket.gethostname()
+    if hostname_short[:4] == "srv-":
+        secrets_path = "/etc/secrets"
+    else:
+        secrets_path = "./secrets"
+    userdata = types.SimpleNamespace()
+    userdata.get = lambda key: open(f"{secrets_path}/{key}").read()
+    
 
 print("Ambiente detetado:", ENV)
 
@@ -90,7 +97,6 @@ if ENV == "jupyter":
 
 else:
   # Flask local ou Render :  vars de ambiente
-
   user = os.environ.get("D5_USER", "JB")
   script = os.path.basename(__file__)
   channel = "GTFS"
@@ -181,15 +187,7 @@ print("Shapes:", len(shapes))
 print("Calendar:", len(calendar))
 print("Agency:", len(agency))
 
-# simple processing
 
-# GeoJSON de stops para visualização
-stops[["stop_id", "stop_name", "stop_lat", "stop_lon"]].to_json(
-    f"{output_path}/stops.json", orient="records"
-)
-
-clts.elapt["Dados carregados e pré-processados"] = clts.deltat(tstart)
-print(f"\nOutput saved to {output_path} ")
 
 """# 5. Conexão e Upsert na(s) base(s) de dados
 
@@ -432,7 +430,7 @@ Ao exportar para `.py` (File → Download → Download .py), este bloco torna o 
 - `D5_DATAPATH` — path para os ficheiros de dados (ex: `./data`)
 - `PORT` — porta do servidor (definida automaticamente pelo Render)
 - Credenciais: `JB-dblist.json`, `JB-mongodb.json`, `configGMail_JB.json` (como env vars no Render)
-"""
+
 
 if ENV == "flask":
     from flask import Flask, jsonify
@@ -454,4 +452,4 @@ if ENV == "flask":
 
     if __name__ == "__main__":
         port = int(os.environ.get("PORT", 5000))
-        app.run(host="0.0.0.0", port=port)
+        app.run(host="0.0.0.0", port=port)"""

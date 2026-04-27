@@ -1,0 +1,12 @@
+flask
+python-dotenv
+requests
+pandas
+psycopg2-binary
+pymysql
+pymongo
+crate
+clts_pcp
+ipynbname
+psutil
+schedule

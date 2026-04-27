@@ -1,0 +1,20 @@
+[
+  {
+    "cycle": "2026-04-27T11:04:27.677270+00:00",
+    "env": "local",
+    "host": "Computador-portatil-de-Mauricio.local",
+    "tasks": {
+      "jb_gtfs": {
+        "name": "jb_gtfs",
+        "status": "ok",
+        "ret": 0,
+        "error": null,
+        "started": "2026-04-27T11:04:27.679859+00:00",
+        "stdout": "mputador-portatil-de-Mauricio.local (193.136.33.135) | JB | GTFS | jb_gtfs.py | -*-. <td align=center> watch time (secs) <td align=center>proc time (secs)<tr><td>script: jb_gtfs.py<td align=right>0.21<td align=right>0.01<tr><td>Download and extracted GTFS Metro do Porto<td align=right>1.14<td align=right>0.04<tr><td>Dados carregados e pr\u00e9-processados<td align=right>1.19<td align=right>0.08<tr><td>Starting database accesses:<td align=right>1.35<td align=right>0.14<tr><td>Connecting to `mongodb`<td align=right>1.35<td align=right>0.14<tr><td>... connected to `mongodb`<td align=right>1.52<td align=right>0.18<tr><td>... stops: inserted 0, skipped 85<td align=right>2.23<td align=right>0.22<tr><td>... routes: inserted 0, skipped 7<td align=right>2.29<td align=right>0.22<tr><td>... trips: inserted 0, skipped 2939<td align=right>2.63<td align=right>0.31<tr><td>... stop_times: inserted 0, skipped 64285<td align=right>4.25<td align=right>1.21<tr><td>... shapes: inserted 0, skipped 274<td align=right>4.38<td align=right>1.23<tr><td>... calendar: inserted 0, skipped 19<td align=right>4.43<td align=right>1.23<tr><td>... agency: inserted 1, skipped 0<td align=right>91.39<td align=right>4.46<tr><td>Connecting to `crate`<td align=right>4.53<td align=right>1.23<tr><td>... connected to `crate` (CrateDB)<td align=right>5.76<td align=right>1.29<tr><td>... stops: inserted 85, skipped 0<td align=right>6.05<td align=right>1.31<tr><td>... routes: inserted 7, skipped 0<td align=right>6.37<td align=right>1.31<tr><td>... trips: inserted 2939, skipped 0<td align=right>10.38<td align=right>1.48<tr><td>... stop_times: inserted 64285, skipped 0<td align=right>90.19<td align=right>4.42<tr><td>... shapes: inserted 274, skipped 0<td align=right>90.76<td align=right>4.46<tr><td>... calendar: inserted 19, skipped 0<td align=right>91.08<td align=right>4.46<tr><td>Overall (before email):<td align=right>91.40<td align=right>4.48<tr><td>After sending email<td align=right>94.55<td align=right>4.50</table>\n",
+        "stderr": "",
+        "elapsed_wall": 96.432,
+        "elapsed_proc": 0.02
+      }
+    }
+  }
+]
