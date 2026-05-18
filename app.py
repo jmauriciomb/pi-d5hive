@@ -21,11 +21,11 @@ def home():
 def health():
     return jsonify({"status": "ok"}), 200
 
-@app.route('/jb_gtfs', methods=['POST'])
+@app.route('/jb_metro', methods=['POST'])
 def jb_gtfs():
     try:
         proc = subprocess.Popen(
-            [sys.executable, 'jb_gtfs.py'],
+            [sys.executable, 'jb_metro.py'],
             cwd=os.path.dirname(os.path.abspath(__file__))
         )
         return jsonify({"status": "started", "pid": proc.pid}), 200

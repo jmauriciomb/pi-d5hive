@@ -1,0 +1,1703 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.598349,
+          41.1488
+        ]
+      },
+      "properties": {
+        "stop_id": 5697,
+        "stop_name": "24 de Agosto",
+        "stop_lat": 41.1488,
+        "stop_lon": -8.598349,
+        "lines": [
+          "A",
+          "B",
+          "Bx",
+          "C",
+          "E",
+          "F"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.545892,
+          41.18557
+        ]
+      },
+      "properties": {
+        "stop_id": 5698,
+        "stop_name": "Baguim",
+        "stop_lat": 41.18557,
+        "stop_lon": -8.545892,
+        "lines": [
+          "F"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.605901,
+          41.14978
+        ]
+      },
+      "properties": {
+        "stop_id": 5699,
+        "stop_name": "Bolhão",
+        "stop_lat": 41.14978,
+        "stop_lon": -8.605901,
+        "lines": [
+          "A",
+          "B",
+          "Bx",
+          "C",
+          "E",
+          "F"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.691469,
+          41.18391
+        ]
+      },
+      "properties": {
+        "stop_id": 5700,
+        "stop_name": "Brito Capelo",
+        "stop_lat": 41.18391,
+        "stop_lon": -8.691469,
+        "lines": [
+          "A"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.681227,
+          41.1807
+        ]
+      },
+      "properties": {
+        "stop_id": 5701,
+        "stop_name": "Câmara Matosinhos",
+        "stop_lat": 41.1807,
+        "stop_lon": -8.681227,
+        "lines": [
+          "A"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.553955,
+          41.18345
+        ]
+      },
+      "properties": {
+        "stop_id": 5702,
+        "stop_name": "Campainha",
+        "stop_lat": 41.18345,
+        "stop_lon": -8.553955,
+        "lines": [
+          "F"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.586245,
+          41.15054
+        ]
+      },
+      "properties": {
+        "stop_id": 5703,
+        "stop_name": "Campanhã",
+        "stop_lat": 41.15054,
+        "stop_lon": -8.586245,
+        "lines": [
+          "A",
+          "B",
+          "Bx",
+          "C",
+          "E",
+          "F"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.622246,
+          41.15858
+        ]
+      },
+      "properties": {
+        "stop_id": 5704,
+        "stop_name": "Carolina Michaelis",
+        "stop_lat": 41.15858,
+        "stop_lon": -8.622246,
+        "lines": [
+          "A",
+          "B",
+          "Bx",
+          "C",
+          "E",
+          "F"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.543604,
+          41.17982
+        ]
+      },
+      "properties": {
+        "stop_id": 5705,
+        "stop_name": "Carreira",
+        "stop_lat": 41.17982,
+        "stop_lon": -8.543604,
+        "lines": [
+          "F"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.628282,
+          41.16058
+        ]
+      },
+      "properties": {
+        "stop_id": 5706,
+        "stop_name": "Casa da Música",
+        "stop_lat": 41.16058,
+        "stop_lon": -8.628282,
+        "lines": [
+          "A",
+          "B",
+          "Bx",
+          "C",
+          "E",
+          "F"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.578639,
+          41.16571
+        ]
+      },
+      "properties": {
+        "stop_id": 5707,
+        "stop_name": "Contumil",
+        "stop_lat": 41.16571,
+        "stop_lon": -8.578639,
+        "lines": [
+          "F"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.582416,
+          41.16072
+        ]
+      },
+      "properties": {
+        "stop_id": 5708,
+        "stop_name": "Estádio do Dragão",
+        "stop_lat": 41.16072,
+        "stop_lon": -8.582416,
+        "lines": [
+          "A",
+          "B",
+          "Bx",
+          "E",
+          "F"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.661189,
+          41.18577
+        ]
+      },
+      "properties": {
+        "stop_id": 5709,
+        "stop_name": "Estádio do Mar",
+        "stop_lat": 41.18577,
+        "stop_lon": -8.661189,
+        "lines": [
+          "A"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.542938,
+          41.1713
+        ]
+      },
+      "properties": {
+        "stop_id": 5710,
+        "stop_name": "Fânzeres",
+        "stop_lat": 41.1713,
+        "stop_lon": -8.542938,
+        "lines": [
+          "F"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.636347,
+          41.16555
+        ]
+      },
+      "properties": {
+        "stop_id": 5711,
+        "stop_name": "Francos",
+        "stop_lat": 41.16555,
+        "stop_lon": -8.636347,
+        "lines": [
+          "A",
+          "B",
+          "Bx",
+          "C",
+          "E",
+          "F"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.592978,
+          41.1467
+        ]
+      },
+      "properties": {
+        "stop_id": 5712,
+        "stop_name": "Heroísmo",
+        "stop_lat": 41.1467,
+        "stop_lon": -8.592978,
+        "lines": [
+          "A",
+          "B",
+          "Bx",
+          "C",
+          "E",
+          "F"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.616723,
+          41.15711
+        ]
+      },
+      "properties": {
+        "stop_id": 5713,
+        "stop_name": "Lapa",
+        "stop_lat": 41.15711,
+        "stop_lon": -8.616723,
+        "lines": [
+          "A",
+          "B",
+          "Bx",
+          "C",
+          "E",
+          "F"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.56212,
+          41.17576
+        ]
+      },
+      "properties": {
+        "stop_id": 5714,
+        "stop_name": "Levada",
+        "stop_lat": 41.17576,
+        "stop_lon": -8.56212,
+        "lines": [
+          "F"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.688553,
+          41.18017
+        ]
+      },
+      "properties": {
+        "stop_id": 5715,
+        "stop_name": "Matosinhos Sul",
+        "stop_lat": 41.18017,
+        "stop_lon": -8.688553,
+        "lines": [
+          "A"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.693391,
+          41.18748
+        ]
+      },
+      "properties": {
+        "stop_id": 5716,
+        "stop_name": "Mercado",
+        "stop_lat": 41.18748,
+        "stop_lon": -8.693391,
+        "lines": [
+          "A"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.577317,
+          41.17077
+        ]
+      },
+      "properties": {
+        "stop_id": 5717,
+        "stop_name": "Nasoni",
+        "stop_lat": 41.17077,
+        "stop_lon": -8.577317,
+        "lines": [
+          "F"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.573534,
+          41.17412
+        ]
+      },
+      "properties": {
+        "stop_id": 5718,
+        "stop_name": "Nau Vitória",
+        "stop_lat": 41.17412,
+        "stop_lon": -8.573534,
+        "lines": [
+          "F"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.673546,
+          41.17911
+        ]
+      },
+      "properties": {
+        "stop_id": 5719,
+        "stop_name": "Parque de Real",
+        "stop_lat": 41.17911,
+        "stop_lon": -8.673546,
+        "lines": [
+          "A"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.666232,
+          41.18038
+        ]
+      },
+      "properties": {
+        "stop_id": 5720,
+        "stop_name": "Pedro Hispano",
+        "stop_lat": 41.18038,
+        "stop_lon": -8.666232,
+        "lines": [
+          "A"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.641766,
+          41.17296
+        ]
+      },
+      "properties": {
+        "stop_id": 5721,
+        "stop_name": "Ramalde",
+        "stop_lat": 41.17296,
+        "stop_lon": -8.641766,
+        "lines": [
+          "A",
+          "B",
+          "Bx",
+          "C",
+          "E",
+          "F"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.560264,
+          41.17942
+        ]
+      },
+      "properties": {
+        "stop_id": 5722,
+        "stop_name": "Rio Tinto",
+        "stop_lat": 41.17942,
+        "stop_lon": -8.560264,
+        "lines": [
+          "F"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.685123,
+          41.18821
+        ]
+      },
+      "properties": {
+        "stop_id": 5723,
+        "stop_name": "Senhor de Matosinhos",
+        "stop_lat": 41.18821,
+        "stop_lon": -8.685123,
+        "lines": [
+          "A"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.654466,
+          41.1881
+        ]
+      },
+      "properties": {
+        "stop_id": 5724,
+        "stop_name": "Senhora da Hora",
+        "stop_lat": 41.1881,
+        "stop_lon": -8.654466,
+        "lines": [
+          "A",
+          "B",
+          "Bx",
+          "C",
+          "E",
+          "F"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.652149,
+          41.18242
+        ]
+      },
+      "properties": {
+        "stop_id": 5725,
+        "stop_name": "NorteShopping I Sete Bicas",
+        "stop_lat": 41.18242,
+        "stop_lon": -8.652149,
+        "lines": [
+          "A",
+          "B",
+          "Bx",
+          "C",
+          "E",
+          "F"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.609299,
+          41.15228
+        ]
+      },
+      "properties": {
+        "stop_id": 5726,
+        "stop_name": "Trindade",
+        "stop_lat": 41.15228,
+        "stop_lon": -8.609299,
+        "lines": [
+          "A",
+          "B",
+          "Bx",
+          "C",
+          "D",
+          "E",
+          "F"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.661037,
+          41.19024
+        ]
+      },
+      "properties": {
+        "stop_id": 5727,
+        "stop_name": "Vasco da Gama",
+        "stop_lat": 41.19024,
+        "stop_lon": -8.661037,
+        "lines": [
+          "A"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.541962,
+          41.17516
+        ]
+      },
+      "properties": {
+        "stop_id": 5728,
+        "stop_name": "Venda Nova",
+        "stop_lat": 41.17516,
+        "stop_lon": -8.541962,
+        "lines": [
+          "F"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.646498,
+          41.17725
+        ]
+      },
+      "properties": {
+        "stop_id": 5729,
+        "stop_name": "Viso",
+        "stop_lat": 41.17725,
+        "stop_lon": -8.646498,
+        "lines": [
+          "A",
+          "B",
+          "Bx",
+          "C",
+          "E",
+          "F"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.745225,
+          41.36464
+        ]
+      },
+      "properties": {
+        "stop_id": 5730,
+        "stop_name": "Alto de Pega",
+        "stop_lat": 41.36464,
+        "stop_lon": -8.745225,
+        "lines": [
+          "B"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.725555,
+          41.3404
+        ]
+      },
+      "properties": {
+        "stop_id": 5731,
+        "stop_name": "Árvore",
+        "stop_lat": 41.3404,
+        "stop_lon": -8.725555,
+        "lines": [
+          "B"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.728122,
+          41.34597
+        ]
+      },
+      "properties": {
+        "stop_id": 5732,
+        "stop_name": "Azurara",
+        "stop_lat": 41.34597,
+        "stop_lon": -8.728122,
+        "lines": [
+          "B"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.656593,
+          41.23301
+        ]
+      },
+      "properties": {
+        "stop_id": 5733,
+        "stop_name": "Crestins",
+        "stop_lat": 41.23301,
+        "stop_lon": -8.656593,
+        "lines": [
+          "B",
+          "E"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.655559,
+          41.20029
+        ]
+      },
+      "properties": {
+        "stop_id": 5734,
+        "stop_name": "Custóias",
+        "stop_lat": 41.20029,
+        "stop_lon": -8.655559,
+        "lines": [
+          "B",
+          "E"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.718681,
+          41.32122
+        ]
+      },
+      "properties": {
+        "stop_id": 5735,
+        "stop_name": "Espaço Natureza",
+        "stop_lat": 41.32122,
+        "stop_lon": -8.718681,
+        "lines": [
+          "B"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.654541,
+          41.21607
+        ]
+      },
+      "properties": {
+        "stop_id": 5736,
+        "stop_name": "Esposade",
+        "stop_lat": 41.21607,
+        "stop_lon": -8.654541,
+        "lines": [
+          "B",
+          "E"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.655771,
+          41.19416
+        ]
+      },
+      "properties": {
+        "stop_id": 5737,
+        "stop_name": "Fonte do Cuco",
+        "stop_lat": 41.19416,
+        "stop_lon": -8.655771,
+        "lines": [
+          "B",
+          "C",
+          "E"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.668018,
+          41.25495
+        ]
+      },
+      "properties": {
+        "stop_id": 5739,
+        "stop_name": "Lidador",
+        "stop_lat": 41.25495,
+        "stop_lon": -8.668018,
+        "lines": [
+          "B"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.714209,
+          41.31508
+        ]
+      },
+      "properties": {
+        "stop_id": 5740,
+        "stop_name": "Mindelo",
+        "stop_lat": 41.31508,
+        "stop_lon": -8.714209,
+        "lines": [
+          "B",
+          "Bx"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.699238,
+          41.29368
+        ]
+      },
+      "properties": {
+        "stop_id": 5741,
+        "stop_name": "Modivas Centro",
+        "stop_lat": 41.29368,
+        "stop_lon": -8.699238,
+        "lines": [
+          "B"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.704004,
+          41.30049
+        ]
+      },
+      "properties": {
+        "stop_id": 5742,
+        "stop_name": "VC Fashion Outlet I Modivas",
+        "stop_lat": 41.30049,
+        "stop_lon": -8.704004,
+        "lines": [
+          "B",
+          "Bx"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.693703,
+          41.28525
+        ]
+      },
+      "properties": {
+        "stop_id": 5743,
+        "stop_name": "Modivas Sul",
+        "stop_lat": 41.28525,
+        "stop_lon": -8.693703,
+        "lines": [
+          "B"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.661807,
+          41.24623
+        ]
+      },
+      "properties": {
+        "stop_id": 5744,
+        "stop_name": "Pedras Rubras",
+        "stop_lat": 41.24623,
+        "stop_lon": -8.661807,
+        "lines": [
+          "B",
+          "Bx"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.749558,
+          41.36895
+        ]
+      },
+      "properties": {
+        "stop_id": 5745,
+        "stop_name": "Portas Fronhas",
+        "stop_lat": 41.36895,
+        "stop_lon": -8.749558,
+        "lines": [
+          "B",
+          "Bx"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.758081,
+          41.37812
+        ]
+      },
+      "properties": {
+        "stop_id": 5746,
+        "stop_name": "Póvoa de Varzim",
+        "stop_lat": 41.37812,
+        "stop_lon": -8.758081,
+        "lines": [
+          "B",
+          "Bx"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.735826,
+          41.35398
+        ]
+      },
+      "properties": {
+        "stop_id": 5747,
+        "stop_name": "Santa Clara",
+        "stop_lat": 41.35398,
+        "stop_lon": -8.735826,
+        "lines": [
+          "B"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.754122,
+          41.37346
+        ]
+      },
+      "properties": {
+        "stop_id": 5748,
+        "stop_name": "São Brás",
+        "stop_lat": 41.37346,
+        "stop_lon": -8.754122,
+        "lines": [
+          "B"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.720721,
+          41.33422
+        ]
+      },
+      "properties": {
+        "stop_id": 5749,
+        "stop_name": "Varziela",
+        "stop_lat": 41.33422,
+        "stop_lon": -8.720721,
+        "lines": [
+          "B",
+          "Bx"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.658212,
+          41.23825
+        ]
+      },
+      "properties": {
+        "stop_id": 5750,
+        "stop_name": "Verdes",
+        "stop_lat": 41.23825,
+        "stop_lon": -8.658212,
+        "lines": [
+          "B",
+          "E"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.73987,
+          41.3591
+        ]
+      },
+      "properties": {
+        "stop_id": 5752,
+        "stop_name": "Vila do Conde",
+        "stop_lat": 41.3591,
+        "stop_lon": -8.73987,
+        "lines": [
+          "B",
+          "Bx"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.679515,
+          41.2703
+        ]
+      },
+      "properties": {
+        "stop_id": 5753,
+        "stop_name": "Vilar do Pinheiro",
+        "stop_lat": 41.2703,
+        "stop_lon": -8.679515,
+        "lines": [
+          "B"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.640978,
+          41.21691
+        ]
+      },
+      "properties": {
+        "stop_id": 5754,
+        "stop_name": "Araújo",
+        "stop_lat": 41.21691,
+        "stop_lon": -8.640978,
+        "lines": [
+          "C"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.649703,
+          41.2007
+        ]
+      },
+      "properties": {
+        "stop_id": 5755,
+        "stop_name": "Cândido dos Reis",
+        "stop_lat": 41.2007,
+        "stop_lon": -8.649703,
+        "lines": [
+          "C"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.616986,
+          41.26275
+        ]
+      },
+      "properties": {
+        "stop_id": 5756,
+        "stop_name": "Castêlo da Maia",
+        "stop_lat": 41.26275,
+        "stop_lon": -8.616986,
+        "lines": [
+          "C"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.638996,
+          41.22234
+        ]
+      },
+      "properties": {
+        "stop_id": 5757,
+        "stop_name": "Custió",
+        "stop_lat": 41.22234,
+        "stop_lon": -8.638996,
+        "lines": [
+          "C"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.623937,
+          41.23463
+        ]
+      },
+      "properties": {
+        "stop_id": 5760,
+        "stop_name": "Fórum Maia",
+        "stop_lat": 41.23463,
+        "stop_lon": -8.623937,
+        "lines": [
+          "C"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.615387,
+          41.26891
+        ]
+      },
+      "properties": {
+        "stop_id": 5761,
+        "stop_name": "ISMAI",
+        "stop_lat": 41.26891,
+        "stop_lon": -8.615387,
+        "lines": [
+          "C"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.628308,
+          41.25358
+        ]
+      },
+      "properties": {
+        "stop_id": 5762,
+        "stop_name": "Mandim",
+        "stop_lat": 41.25358,
+        "stop_lon": -8.628308,
+        "lines": [
+          "C"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.626897,
+          41.22902
+        ]
+      },
+      "properties": {
+        "stop_id": 5763,
+        "stop_name": "Parque Maia",
+        "stop_lat": 41.22902,
+        "stop_lon": -8.626897,
+        "lines": [
+          "C"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.647122,
+          41.20823
+        ]
+      },
+      "properties": {
+        "stop_id": 5764,
+        "stop_name": "Pias",
+        "stop_lat": 41.20823,
+        "stop_lon": -8.647122,
+        "lines": [
+          "C"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.628555,
+          41.24397
+        ]
+      },
+      "properties": {
+        "stop_id": 5765,
+        "stop_name": "Zona Indústrial",
+        "stop_lat": 41.24397,
+        "stop_lon": -8.628555,
+        "lines": [
+          "C"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.610945,
+          41.14858
+        ]
+      },
+      "properties": {
+        "stop_id": 5766,
+        "stop_name": "Aliados",
+        "stop_lat": 41.14858,
+        "stop_lon": -8.610945,
+        "lines": [
+          "D"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.606116,
+          41.12967
+        ]
+      },
+      "properties": {
+        "stop_id": 5767,
+        "stop_name": "Câmara Gaia",
+        "stop_lat": 41.12967,
+        "stop_lon": -8.606116,
+        "lines": [
+          "D"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.598464,
+          41.1653
+        ]
+      },
+      "properties": {
+        "stop_id": 5768,
+        "stop_name": "Combatentes",
+        "stop_lat": 41.1653,
+        "stop_lon": -8.598464,
+        "lines": [
+          "D"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.60623,
+          41.11966
+        ]
+      },
+      "properties": {
+        "stop_id": 5769,
+        "stop_name": "D. João II",
+        "stop_lat": 41.11966,
+        "stop_lon": -8.60623,
+        "lines": [
+          "D"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.609141,
+          41.15722
+        ]
+      },
+      "properties": {
+        "stop_id": 5770,
+        "stop_name": "Faria Guimarães",
+        "stop_lat": 41.15722,
+        "stop_lon": -8.609141,
+        "lines": [
+          "D"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.607489,
+          41.13387
+        ]
+      },
+      "properties": {
+        "stop_id": 5771,
+        "stop_name": "General Torres",
+        "stop_lat": 41.13387,
+        "stop_lon": -8.607489,
+        "lines": [
+          "D"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.604521,
+          41.18125
+        ]
+      },
+      "properties": {
+        "stop_id": 5772,
+        "stop_name": "IPO",
+        "stop_lat": 41.18125,
+        "stop_lon": -8.604521,
+        "lines": [
+          "D"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.608646,
+          41.13764
+        ]
+      },
+      "properties": {
+        "stop_id": 5773,
+        "stop_name": "Jardim do Morro",
+        "stop_lat": 41.13764,
+        "stop_lon": -8.608646,
+        "lines": [
+          "D"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.605627,
+          41.12606
+        ]
+      },
+      "properties": {
+        "stop_id": 5774,
+        "stop_name": "João de Deus",
+        "stop_lat": 41.12606,
+        "stop_lon": -8.605627,
+        "lines": [
+          "D"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.604272,
+          41.16112
+        ]
+      },
+      "properties": {
+        "stop_id": 5775,
+        "stop_name": "Marquês",
+        "stop_lat": 41.16112,
+        "stop_lon": -8.604272,
+        "lines": [
+          "D"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.603607,
+          41.17425
+        ]
+      },
+      "properties": {
+        "stop_id": 5776,
+        "stop_name": "Pólo Universitário",
+        "stop_lat": 41.17425,
+        "stop_lon": -8.603607,
+        "lines": [
+          "D"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.598744,
+          41.16969
+        ]
+      },
+      "properties": {
+        "stop_id": 5777,
+        "stop_name": "Salgueiros",
+        "stop_lat": 41.16969,
+        "stop_lon": -8.598744,
+        "lines": [
+          "D"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.610815,
+          41.14494
+        ]
+      },
+      "properties": {
+        "stop_id": 5778,
+        "stop_name": "São Bento",
+        "stop_lat": 41.14494,
+        "stop_lon": -8.610815,
+        "lines": [
+          "D"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.669442,
+          41.23708
+        ]
+      },
+      "properties": {
+        "stop_id": 5782,
+        "stop_name": "Aeroporto",
+        "stop_lat": 41.23708,
+        "stop_lon": -8.669442,
+        "lines": [
+          "E"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.665208,
+          41.23752
+        ]
+      },
+      "properties": {
+        "stop_id": 5783,
+        "stop_name": "Botica",
+        "stop_lat": 41.23752,
+        "stop_lon": -8.665208,
+        "lines": [
+          "E"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.60224,
+          41.18326
+        ]
+      },
+      "properties": {
+        "stop_id": 5791,
+        "stop_name": "Hospital São João",
+        "stop_lat": 41.18326,
+        "stop_lon": -8.60224,
+        "lines": [
+          "D"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.606555,
+          41.11555
+        ]
+      },
+      "properties": {
+        "stop_id": 5792,
+        "stop_name": "Santo Ovídio",
+        "stop_lat": 41.11555,
+        "stop_lon": -8.606555,
+        "lines": [
+          "D"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.591075,
+          41.10576
+        ]
+      },
+      "properties": {
+        "stop_id": 5811,
+        "stop_name": "Hospital Santos Silva",
+        "stop_lat": 41.10576,
+        "stop_lon": -8.591075,
+        "lines": [
+          "D"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.599958,
+          41.11066
+        ]
+      },
+      "properties": {
+        "stop_id": 5812,
+        "stop_name": "Manuel Leão",
+        "stop_lat": 41.11066,
+        "stop_lon": -8.599958,
+        "lines": [
+          "D"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.588716,
+          41.09872
+        ]
+      },
+      "properties": {
+        "stop_id": 5813,
+        "stop_name": "Vila d'Este",
+        "stop_lat": 41.09872,
+        "stop_lon": -8.588716,
+        "lines": [
+          "D"
+        ]
+      }
+    }
+  ]
+}

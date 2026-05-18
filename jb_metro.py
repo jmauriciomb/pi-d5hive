@@ -20,7 +20,8 @@ import socket
 import os
 import zipfile
 import pandas as pd
-
+import shutil
+import math
 
 try:
     from google.colab import userdata
@@ -28,7 +29,7 @@ try:
     #! pip install psycopg2
     import pymysql
     import clts_pcp as clts
-    ENV = "jupyter"
+    ENV = "colab"
 except ImportError:
     # Ambiente flask
     import clts_pcp as clts
@@ -46,6 +47,7 @@ except ImportError:
     
 
 print("Ambiente detetado:", ENV)
+
 
 """## 2. Reconhecimento do contexto
 
@@ -70,7 +72,9 @@ DEFAULT_PARAMS = {
     "destination": "-*-",         # deprecated to use several alternatives: ['localhost', 'baze.cm-maia.pt', 'aiven'] - see below
     "send_mail": True,          # alternatives: [True, False]
     #"email_addresses": ["pedroccpimenta@gmail.com", 'ppimenta.umaia@gmail.com' ]  # array of email addresses - alternatives: ['ppimenta@umaia.pt', 'ppimenta@cm-maia.pt']
-    "email_addresses": ["up202303784@g.uporto.pt" ]
+    "email_addresses": ["up202303784@g.uporto.pt" ],
+    "gtfs_url": "https://opendata.porto.digital/dataset/15f22603-a216-492a-ab1c-40b1d8aa2f08/resource/5e2b445d-b85b-4afb-9116-90b24327151c/download/horarios_gtfs_mdp_07_04_2026.zip",
+    "gtfs_prefix": "metro_"
     }
 
 # get hostanme of the machine where the script is running
@@ -80,8 +84,8 @@ ip = requests.get('https://api.ipify.org').text
 
 print("Server name:", hostname, "Public IP Address:", ip)
 
-if ENV == "jupyter":
-    #!pip install ipynbname --quiet
+if ENV == "colab":
+    !pip install ipynbname --quiet
     import ipynbname
     notebookname = requests.get("http://172.28.0.12:9000/api/sessions").json()[0]["name"]
     user = notebookname.split("_")[0]
@@ -124,27 +128,35 @@ Extrai os ficheiros GTFS do ZIP e carrega as tabelas da Fase 1.
 O ZIP deve estar em `datapath` — no Colab, fazer upload manual para `/content/`.
 """
 
-GTFS_URL = GTFS_URL = "https://opendata.porto.digital/dataset/15f22603-a216-492a-ab1c-40b1d8aa2f08/resource/f592c53a-e669-4cac-9e28-ab84b87e7f6b/download/horarios_gtfs_09_09_2024.zip"
+import shutil
+
+GTFS_URL = DEFAULT_PARAMS["gtfs_url"]
 zip_path = os.path.join(datapath, "metro_porto.zip")
 gtfs_path = os.path.join(datapath, "gtfs_data")
 output_path = os.path.join(datapath, "output")
 
-os.makedirs(gtfs_path, exist_ok=True)
+# clean slate on every run
+if os.path.exists(gtfs_path):
+    shutil.rmtree(gtfs_path)
+os.makedirs(gtfs_path)
 os.makedirs(output_path, exist_ok=True)
 
-response = requests.get(GTFS_URL)
+response = requests.get(GTFS_URL, stream=True)
 response.raise_for_status()
 
+ct = response.headers.get("Content-Type", "")
+if "zip" not in ct and "octet-stream" not in ct:
+    print(f"Unexpected Content-Type: {ct}")
+
 with open(zip_path, "wb") as f:
-  f.write(response.content)
+    for chunk in response.iter_content(chunk_size=8192):
+        f.write(chunk)
 
 print("Status:", response.status_code)
-print("Content-Type:", response.headers.get("Content-Type"))
-print("Tamanho:", len(response.content), "bytes")
-print("Primeiros bytes:", response.content[:100])
+print("Content-Type:", ct)
+print("ZIP guardado em:", zip_path)
 
-# extract zip
-with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+with zipfile.ZipFile(zip_path, "r") as zip_ref:
     zip_ref.extractall(gtfs_path)
 
 clts.elapt["Download and extracted GTFS Metro do Porto"] = clts.deltat(tstart)
@@ -152,19 +164,26 @@ print("ZIP extraído para:", gtfs_path)
 
 """## 4. Pré-processamento
 
-Carrega as tabelas GTFS (Fase 1) e gera métricas básicas de validação.
+Carrega as tabelas GTFS e gera métricas básicas de validação.
 """
 
-gtfs_folder = next(f for f in os.listdir(gtfs_path) if os.path.isdir(os.path.join(gtfs_path, f)))
-# load GTFS tables
+# detect flat vs subfolder extraction
+first = os.listdir(gtfs_path)[0]
+if os.path.isdir(os.path.join(gtfs_path, first)):
+    gtfs_folder = os.path.join(gtfs_path, first)
+else:
+    gtfs_folder = gtfs_path  # this ZIP extracts flat
 
-stops      = pd.read_csv(os.path.join(gtfs_path, gtfs_folder, "stops.txt"))
-routes     = pd.read_csv(os.path.join(gtfs_path, gtfs_folder, "routes.txt"))
-trips      = pd.read_csv(os.path.join(gtfs_path, gtfs_folder, "trips.txt"))
-stop_times = pd.read_csv(os.path.join(gtfs_path, gtfs_folder, "stop_times.txt"))
-shapes     = pd.read_csv(os.path.join(gtfs_path, gtfs_folder, "shapes.txt"))
-calendar   = pd.read_csv(os.path.join(gtfs_path, gtfs_folder, "calendar.txt"))
-agency     = pd.read_csv(os.path.join(gtfs_path, gtfs_folder, "agency.txt"))
+stops      = pd.read_csv(os.path.join(gtfs_folder, "stops.txt"))
+routes     = pd.read_csv(os.path.join(gtfs_folder, "routes.txt"))
+trips      = pd.read_csv(os.path.join(gtfs_folder, "trips.txt"))
+stop_times = pd.read_csv(os.path.join(gtfs_folder, "stop_times.txt"))
+shapes     = pd.read_csv(os.path.join(gtfs_folder, "shapes.txt"))
+calendar   = pd.read_csv(os.path.join(gtfs_folder, "calendar.txt"))
+calendar_dates   = pd.read_csv(os.path.join(gtfs_folder, "calendar_dates.txt"))
+agency     = pd.read_csv(os.path.join(gtfs_folder, "agency.txt"))
+fare_attributes = pd.read_csv(os.path.join(gtfs_folder, "fare_attributes.txt"))
+fare_rules      = pd.read_csv(os.path.join(gtfs_folder, "fare_rules.txt"))
 
 print(stops.columns)
 print(routes.columns)
@@ -172,6 +191,9 @@ print(trips.columns)
 print(stop_times.columns)
 print(shapes.columns)
 print(calendar.columns)
+print(calendar_dates.columns)
+print(fare_attributes.columns)
+print(fare_rules.columns)
 print(agency.columns)
 
 
@@ -184,9 +206,86 @@ print("Trips:", len(trips))
 print("Stop Times:", len(stop_times))
 print("Shapes:", len(shapes))
 print("Calendar:", len(calendar))
+print("Calendar Dates:", len(calendar_dates))
+print("Fare Attributes:", len(fare_attributes))
+print("Fare Rules:", len(fare_rules))
 print("Agency:", len(agency))
 
+"""# GeoJSON export (stops + routes)
 
+Exports two GeoJSON files to output_path/:
+- stops.geojson — one Point per stop, with stop_id, name, coordinates and the list of lines serving it
+- routes.geojson — one LineString per route (one representative shape), with route name and computed length (km)
+"""
+
+st_trips  = stop_times[["trip_id","stop_id"]].merge(trips[["trip_id","route_id"]], on="trip_id")
+st_routes = st_trips.merge(routes[["route_id","route_short_name"]], on="route_id")
+
+# Agrega as linhas únicas por paragem, ordenadas alfabeticamente
+lines_per_stop = (
+    st_routes.groupby("stop_id")["route_short_name"]
+    .apply(lambda x: sorted(x.unique().tolist()))
+    .reset_index().rename(columns={"route_short_name": "lines"})
+)
+
+# Junta as linhas ao DataFrame de paragens
+stops_geo = stops.merge(lines_per_stop, on="stop_id", how="left")
+
+# Constrói o GeoJSON: cada linha do DataFrame torna-se uma Feature
+stops_geojson = {
+    "type": "FeatureCollection",
+    "features": [
+        {"type": "Feature",
+         "geometry": {"type": "Point", "coordinates": [row["stop_lon"], row["stop_lat"]]},
+         "properties": {"stop_id": row["stop_id"], "stop_name": row.get("stop_name",""),
+                        "stop_lat": row["stop_lat"], "stop_lon": row["stop_lon"],
+                        "lines": row.get("lines", [])}}
+        for _, row in stops_geo.iterrows()
+    ]
+}
+with open(os.path.join(output_path, "stops.geojson"), "w", encoding="utf-8") as f:
+    json.dump(stops_geojson, f, ensure_ascii=False, indent=2)
+
+clts.elapt["Exported stops.geojson"] = clts.deltat(tstart)
+print(f"stops.geojson → {len(stops_geojson['features'])} features")
+
+import math
+
+def haversine_km(lat1, lon1, lat2, lon2):
+    R = 6371.0
+    dlat, dlon = math.radians(lat2-lat1), math.radians(lon2-lon1)
+    a = (math.sin(dlat/2)**2 + math.cos(math.radians(lat1))
+         * math.cos(math.radians(lat2)) * math.sin(dlon/2)**2)
+    return R * 2 * math.asin(math.sqrt(a))
+
+# one representative shape per route
+route_shapes = (
+    trips[["route_id","shape_id"]].drop_duplicates()
+    .sort_values("shape_id").groupby("route_id", as_index=False).first()
+    .merge(routes[["route_id","route_short_name"]], on="route_id")
+)
+shapes_sorted = shapes.sort_values(["shape_id","shape_pt_sequence"])
+
+routes_features = []
+for _, rs in route_shapes.iterrows():
+    pts = shapes_sorted[shapes_sorted["shape_id"] == rs["shape_id"]]
+    if pts.empty: continue
+    coords = [[r["shape_pt_lon"], r["shape_pt_lat"]] for _, r in pts.iterrows()]
+    length_km = sum(haversine_km(coords[i][1],coords[i][0],coords[i+1][1],coords[i+1][0])
+                    for i in range(len(coords)-1))
+    routes_features.append({
+        "type": "Feature",
+        "geometry": {"type": "LineString", "coordinates": coords},
+        "properties": {"route_id": rs["route_id"], "route_short_name": rs["route_short_name"],
+                        "shape_id": rs["shape_id"], "length_km": round(length_km, 3)}
+    })
+
+routes_geojson = {"type": "FeatureCollection", "features": routes_features}
+with open(os.path.join(output_path, "routes.geojson"), "w", encoding="utf-8") as f:
+    json.dump(routes_geojson, f, ensure_ascii=False, indent=2)
+
+clts.elapt["Exported routes.geojson"] = clts.deltat(tstart)
+print(f"routes.geojson → {len(routes_features)} features")
 
 """# 5. Conexão e Upsert na(s) base(s) de dados
 
@@ -209,23 +308,29 @@ Para cada tuplo (`user`, `base de dados`), deverá haver um ficheiro de credenci
 """
 
 # The script have to be parametrized by 'User' (so the script could be portable between users)
-# The script have to be parametrized by 'User' (so the script could be portable between users)
 
 from pymongo import MongoClient
 import psycopg2
+from psycopg2.extras import execute_values
+import pymysql
+import numpy as np
 
 
 clts.elapt[f"Starting database accesses:"] = clts.deltat(tstart)
 
 
+gtfs_prefix = DEFAULT_PARAMS["gtfs_prefix"]
 gtfs_tables = [
-    ("stops", stops, "stop_id"),
-    ("routes", routes, "route_id"),
-    ("trips", trips, "trip_id"),
-    ("stop_times", stop_times, ["trip_id", "stop_sequence"]),
-    ("shapes", shapes, ["shape_id", "shape_pt_sequence"]),
-    ("calendar", calendar, "service_id"),
-    ("agency", agency, "agency_id")
+    (f"{gtfs_prefix}stops",           stops,           "stop_id"),
+    (f"{gtfs_prefix}routes",          routes,          "route_id"),
+    (f"{gtfs_prefix}trips",           trips,           "trip_id"),
+    (f"{gtfs_prefix}stop_times",      stop_times,      ["trip_id", "stop_sequence"]),
+    (f"{gtfs_prefix}shapes",          shapes,          ["shape_id", "shape_pt_sequence"]),
+    (f"{gtfs_prefix}calendar",        calendar,        "service_id"),
+    (f"{gtfs_prefix}calendar_dates",  calendar_dates,  ["service_id", "date"]),
+    (f"{gtfs_prefix}agency",          agency,          "agency_id"),
+    (f"{gtfs_prefix}fare_attributes", fare_attributes, "fare_id"),
+    (f"{gtfs_prefix}fare_rules",      fare_rules,      ["fare_id", "origin_id", "destination_id"]),
 ]
 
 tstamp = clts.getts()
@@ -251,7 +356,6 @@ for dbname in dblist:
 
         if dbcreds['dbms'] == "mongodb":
             mongo_uri = f"mongodb+srv://{dbcreds['username']}:{dbcreds['password']}@{dbcreds['dest_host']}/{dbcreds['database']}"
-
             client = MongoClient(mongo_uri)
             db = client[dbcreds['database']]
             clts.elapt[f"... connected to `{dbname}`"] = clts.deltat(tstart)
@@ -290,6 +394,8 @@ for dbname in dblist:
 
             status = "ok"
 
+
+
         elif dbcreds['dbms'] == "cratedb":
             conn = psycopg2.connect(
                 host=dbcreds['dest_host'],
@@ -306,7 +412,6 @@ for dbname in dblist:
             print("schema atual:", cursor.fetchone())
 
             clts.elapt[f"... connected to `{dbname}` (CrateDB)"] = clts.deltat(tstart)
-            from psycopg2.extras import execute_values
 
             for (tablename, df, key) in gtfs_tables:
                 print(f"\nProcessing {tablename}...")
@@ -314,6 +419,7 @@ for dbname in dblist:
                 new_rows = df.copy()
                 new_rows["hostsource"] = hostname
                 new_rows["tstamp"] = datetime.datetime.now()
+                new_rows = new_rows.where(pd.notnull(new_rows), None)
 
                 cols = list(new_rows.columns)
                 columns_sql = ", ".join(cols)
@@ -338,6 +444,97 @@ for dbname in dblist:
             cursor.close()
             conn.close()
             status = "ok"
+
+
+        elif dbcreds['dbms'] == "tidb":
+            # certificado SSL varia por ambiente
+            if ENV == "colab":
+                ssl_ca = "/etc/ssl/certs/ca-certificates.crt"  # Linux / Colab
+            elif ENV == "flask":
+                if hostname_short[:4] == "srv-":
+                    ssl_ca = "/etc/ssl/certs/ca-certificates.crt"  # Render (Linux)
+                else:
+                    ssl_ca = "/etc/ssl/cert.pem"  # local
+
+            conn = pymysql.connect(
+                host=dbcreds['dest_host'],
+                port=dbcreds['port'],
+                user=dbcreds['username'],
+                password=dbcreds['password'],
+                database=dbcreds['database'],
+                ssl_verify_cert=True,
+                ssl_verify_identity=True,
+                ssl_ca=ssl_ca
+            )
+
+            cursor = conn.cursor()
+            clts.elapt[f"... connected to `{dbname}` (TiDB)"] = clts.deltat(tstart)
+
+            for (tablename, df, key) in gtfs_tables:
+                print(f"\nProcessing {tablename}...")
+
+                new_rows = df.copy()
+                new_rows["hostsource"] = hostname
+                new_rows["tstamp"] = datetime.datetime.now()
+                # MySQL não aceita NaN, só NULL
+                new_rows = new_rows.where(pd.notnull(new_rows), None)
+
+                pk_cols = key if isinstance(key, list) else [key]
+                # cria a tabela se não existir, inferindo colunas do DataFrame
+                col_defs = []
+                for col, dtype in new_rows.dtypes.items():
+                    if "int" in str(dtype):
+                        col_defs.append(f"`{col}` BIGINT")
+                    elif "float" in str(dtype):
+                        col_defs.append(f"`{col}` DOUBLE")
+                    elif col == "tstamp":
+                        col_defs.append(f"`{col}` DATETIME")
+                    elif col in pk_cols:
+                        col_defs.append(f"`{col}` VARCHAR(255)")  # primary key não pode ser TEXT
+                    else:
+                        col_defs.append(f"`{col}` TEXT")
+
+
+                pk_def  = ", ".join([f"`{k}`" for k in pk_cols])
+                col_defs.append(f"PRIMARY KEY ({pk_def})")
+
+                create_sql = f"CREATE TABLE IF NOT EXISTS `{tablename}` ({', '.join(col_defs)})"
+                cursor.execute(create_sql)
+                conn.commit()
+
+                # insert com ON DUPLICATE KEY UPDATE — requer chave primária
+                # usa INSERT IGNORE para ignorar duplicados sem chave definida
+                cols = list(new_rows.columns)
+                placeholders = ", ".join(["%s"] * len(cols))
+                col_names = ", ".join([f"`{c}`" for c in cols])
+                insert_sql = f"INSERT IGNORE INTO `{tablename}` ({col_names}) VALUES ({placeholders})"
+
+                values = [
+                    tuple(None if (v is not None and isinstance(v, float) and np.isnan(v)) else v for v in row)
+                    for _, row in new_rows.iterrows()
+                ]
+
+                # insere em batches de 500
+                BATCH = 500
+                inserted = 0
+                for i in range(0, len(values), BATCH):
+                    batch = values[i:i+BATCH]
+                    cursor.executemany(insert_sql, batch)
+                    conn.commit()
+                    inserted += cursor.rowcount
+                    print(f"  {tablename}: {i+len(batch)}/{len(values)}")
+
+                skipped = len(new_rows) - inserted
+                clts.elapt[f"... [{dbname}] {tablename}: inserted {inserted}, skipped {skipped}"] = clts.deltat(tstart)
+
+            cursor.close()
+            conn.close()
+            status = "ok"
+
+
+
+
+
 
     except Exception as e:
         import traceback
