@@ -57,6 +57,8 @@ def run_pipeline( env: str,get_secret, user: str, context: str) -> InsertResult:
     clts.elapt[f"Resumo: {grand_total}"] = clts.deltat(config.TSTART)
     clts.elapt["Antes do email"] = clts.deltat(config.TSTART)
 
+    
+    print(f"DEBUG email: env={env} | user='{user}' | addresses={EMAIL['addresses']}")
     # 3. Emails
     if EMAIL["send"] and EMAIL["addresses"]:
         log_text = clts.listtimes()
