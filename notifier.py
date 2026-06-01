@@ -2,7 +2,7 @@ import os
 import json
 
 
-def send_notification(  env: str,  get_secret, subject: str, text: str, html: str,  email_addresses: list[str],) -> None:
+def send_notification(env: str, user: str, get_secret, subject: str, text: str, html: str,  email_addresses: list[str],) -> None:
 
     if not email_addresses:
         print("  Sem endereços de email")
@@ -11,7 +11,7 @@ def send_notification(  env: str,  get_secret, subject: str, text: str, html: st
     if env == "render":
         _send_brevo(subject, text, html, email_addresses)
     else:
-        _send_gmail(get_secret, subject, text, html, email_addresses)
+        _send_gmail(get_secret, user, subject, text, html, email_addresses)
 
 
 def _send_brevo(subject: str, text: str, html: str, addresses: list[str]) -> None:
@@ -36,15 +36,15 @@ def _send_brevo(subject: str, text: str, html: str, addresses: list[str]) -> Non
     print("  Notificação enviada via Brevo ✅:", resp.json())
 
 
-def _send_gmail(get_secret, subject: str, text: str, html: str, addresses: list[str]) -> None:
+def _send_gmail(get_secret, user: str, subject: str, text: str, html: str, addresses: list[str]) -> None:
     from email.mime.text import MIMEText
     from email.mime.multipart import MIMEMultipart
     import smtplib
     import ssl as _ssl
 
-    raw = get_secret("configGMail_TO_json")
+    raw = get_secret(get_secret(f"configGMail_{user}_json"))
     if raw is None:
-        raise ValueError("Credenciais Gmail em falta (configGMail_TO_json)")
+        raise ValueError(f"Credenciais Gmail em falta (get_secret(configGMail_{user}_json))")
     creds = json.loads(raw)
 
     message             = MIMEMultipart("alternative")

@@ -70,7 +70,7 @@ def run_pipeline( env: str,get_secret, user: str, context: str) -> InsertResult:
             + "</body></html>"
         )
         try:
-            send_notification(env, get_secret, subject, text, html, EMAIL["addresses"])
+            send_notification(env, user, get_secret, subject, text, html, EMAIL["addresses"])
             clts.elapt["Email enviado ✅"] = clts.deltat(config.TSTART)
         except Exception as e:
             print(f"  Erro email: {e}")
