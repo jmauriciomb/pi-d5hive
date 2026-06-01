@@ -1,13 +1,10 @@
 import math
-import json
 import shutil
 import zipfile
 import requests
 import pandas as pd
 import clts_pcp as clts  # type: ignore
 
-import config
-from config import GTFS_URL, GTFS_PREFIX, VERBOSE
 
 # helpers
 
@@ -21,22 +18,38 @@ def haversine_km(lat1, lon1, lat2, lon2) -> float:
     return R * 2 * math.asin(math.sqrt(a))
 
 
+# mapping: config attribute -> (dict key, filename)
+_TABLE_FILE_MAP = [
+    ("TABLE_STOPS",           "stops",           "stops.txt"),
+    ("TABLE_ROUTES",          "routes",          "routes.txt"),
+    ("TABLE_TRIPS",           "trips",           "trips.txt"),
+    ("TABLE_STOP_TIMES",      "stop_times",      "stop_times.txt"),
+    ("TABLE_SHAPES",          "shapes",          "shapes.txt"),
+    ("TABLE_CALENDAR",        "calendar",        "calendar.txt"),
+    ("TABLE_CALENDAR_DATES",  "calendar_dates",  "calendar_dates.txt"),
+    ("TABLE_AGENCY",          "agency",          "agency.txt"),
+    ("TABLE_FARE_ATTRIBUTES", "fare_attributes", "fare_attributes.txt"),
+    ("TABLE_FARE_RULES",      "fare_rules",      "fare_rules.txt"),
+    ("TABLE_FEED_INFO",       "feed_info",       "feed_info.txt"),
+]
+
+
 # download e extração
 
-def download_and_extract(datapath: str) -> str:
+def download_and_extract(datapath: str, config) -> str:
     """
     Descarrega o ZIP GTFS e extrai para gtfs_data/.
     Devolve o caminho para a pasta com os ficheiros .txt.
     """
     import os
-    zip_path  = os.path.join(datapath, "metro_porto.zip")
+    zip_path  = os.path.join(datapath, f"{config.GTFS_PREFIX}gtfs.zip")
     gtfs_path = os.path.join(datapath, "gtfs_data")
 
     if os.path.exists(gtfs_path):
         shutil.rmtree(gtfs_path)
     os.makedirs(gtfs_path)
 
-    response = requests.get(GTFS_URL, stream=True)
+    response = requests.get(config.GTFS_URL, stream=True)
     response.raise_for_status()
 
     ct = response.headers.get("Content-Type", "")
@@ -48,12 +61,11 @@ def download_and_extract(datapath: str) -> str:
             f.write(chunk)
 
     print(f"ZIP guardado em: {zip_path}")
-    clts.elapt["Download GTFS Metro do Porto"] = clts.deltat(config.TSTART)
+    clts.elapt[f"Download GTFS {config.GTFS_PREFIX}"] = clts.deltat(config.TSTART)
 
     with zipfile.ZipFile(zip_path, "r") as z:
         z.extractall(gtfs_path)
 
-    # detect flat vs subfolder extraction
     import os as _os
     first = _os.listdir(gtfs_path)[0]
     if _os.path.isdir(_os.path.join(gtfs_path, first)):
@@ -69,28 +81,20 @@ def download_and_extract(datapath: str) -> str:
 
 # carregamento dos CSVs
 
-def load_gtfs_tables(gtfs_folder: str) -> dict[str, pd.DataFrame]:
-    """Carrega todos os ficheiros GTFS e devolve um dict name -> DataFrame."""
+def load_gtfs_tables(gtfs_folder: str, config) -> dict[str, pd.DataFrame]:
+    """Carrega os ficheiros GTFS presentes em config e devolve um dict name -> DataFrame."""
     import os
-    files = {
-        "stops":           "stops.txt",
-        "routes":          "routes.txt",
-        "trips":           "trips.txt",
-        "stop_times":      "stop_times.txt",
-        "shapes":          "shapes.txt",
-        "calendar":        "calendar.txt",
-        "calendar_dates":  "calendar_dates.txt",
-        "agency":          "agency.txt",
-        "fare_attributes": "fare_attributes.txt",
-        "fare_rules":      "fare_rules.txt",
-    }
-
     tables = {}
-    for name, filename in files.items():
+    for attr, key, filename in _TABLE_FILE_MAP:
+        if not hasattr(config, attr):
+            continue
         path = os.path.join(gtfs_folder, filename)
-        tables[name] = pd.read_csv(path)
-        if VERBOSE:
-            print(f"  {name}: {len(tables[name])} linhas")
+        if not os.path.exists(path):
+            print(f"  Ficheiro não encontrado (ignorado): {filename}")
+            continue
+        tables[key] = pd.read_csv(path)
+        if config.VERBOSE:
+            print(f"  {key}: {len(tables[key])} linhas")
 
     print("\nDataset sizes:")
     for name, df in tables.items():
@@ -100,29 +104,26 @@ def load_gtfs_tables(gtfs_folder: str) -> dict[str, pd.DataFrame]:
     return tables
 
 
-
 # Construção dos GeoJSONs
 
 def build_stops_geojson(stops: pd.DataFrame, stop_times: pd.DataFrame,
-                        trips: pd.DataFrame, routes: pd.DataFrame) -> dict:
+                        trips: pd.DataFrame, routes: pd.DataFrame,
+                        config) -> dict:
     """FeatureCollection de Points: uma feature por paragem."""
 
     st_trips  = stop_times[["trip_id", "stop_id"]].merge(
                     trips[["trip_id", "route_id"]], on="trip_id")
     st_routes = st_trips.merge(
                     routes[["route_id", "route_short_name"]], on="route_id")
-    
-    # Agrega as linhas únicas por paragem, ordenadas alfabeticamente
+
     lines_per_stop = (
         st_routes.groupby("stop_id")["route_short_name"]
         .apply(lambda x: sorted(x.unique().tolist()))
         .reset_index()
         .rename(columns={"route_short_name": "lines"})
     )
-    # Junta as linhas ao DataFrame de paragens
     stops_geo = stops.merge(lines_per_stop, on="stop_id", how="left")
 
-    # Constrói o GeoJSON: cada linha do DataFrame torna-se uma Feature
     geojson = {
         "type": "FeatureCollection",
         "features": [
@@ -150,10 +151,9 @@ def build_stops_geojson(stops: pd.DataFrame, stop_times: pd.DataFrame,
 
 
 def build_routes_geojson(shapes: pd.DataFrame, trips: pd.DataFrame,
-                         routes: pd.DataFrame) -> dict:
+                         routes: pd.DataFrame, config) -> dict:
     """FeatureCollection de LineStrings: uma feature por rota."""
 
-    # one representative shape per route
     route_shapes = (
         trips[["route_id", "shape_id"]].drop_duplicates()
         .sort_values("shape_id")
@@ -190,23 +190,22 @@ def build_routes_geojson(shapes: pd.DataFrame, trips: pd.DataFrame,
     return geojson
 
 
-
 # Entry point chamado pelo pipeline.py
 
-def parse_all(datapath: str) -> tuple[dict, dict, dict[str, pd.DataFrame]]:
+def parse_all(datapath: str, config) -> tuple[dict, dict, dict[str, pd.DataFrame]]:
     """
     Descarrega, extrai e processa os dados GTFS.
     Devolve (stops_geojson, routes_geojson, gtfs_tables).
     """
-    gtfs_folder = download_and_extract(datapath)
-    tables      = load_gtfs_tables(gtfs_folder)
+    gtfs_folder = download_and_extract(datapath, config)
+    tables      = load_gtfs_tables(gtfs_folder, config)
 
     stops_geojson  = build_stops_geojson(
         tables["stops"], tables["stop_times"],
-        tables["trips"], tables["routes"]
+        tables["trips"], tables["routes"], config
     )
     routes_geojson = build_routes_geojson(
-        tables["shapes"], tables["trips"], tables["routes"]
+        tables["shapes"], tables["trips"], tables["routes"], config
     )
 
     return stops_geojson, routes_geojson, tables

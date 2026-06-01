@@ -1,5 +1,5 @@
 import datetime
-from env_utils import detect_environment, make_secret_getter
+from gtfs.shared.env_utils import detect_environment, make_secret_getter
 
 secret = make_secret_getter(detect_environment())
 

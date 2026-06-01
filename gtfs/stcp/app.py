@@ -1,4 +1,7 @@
-import os
+import sys, os
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))  # project root (for gtfs.shared.* in config.py)
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "shared"))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import socket
 import datetime
 
@@ -50,7 +53,7 @@ else:
         script = ipynbname.name()
     except Exception:
         script = "colab_notebook"
-    channel = f"{user} Metro GTFS"
+    channel = f"{user} STCP GTFS"
 
 context = f"{hostname} ({ip}) | {user} | {channel} | {script}"
 print("context:", context)
@@ -62,7 +65,7 @@ print("context:", context)
 if ENV == "google_colab":
     from pipeline import run_pipeline
     config.TSTART = clts.getts()
-    result = run_pipeline(ENV, get_secret, user, context)
+    result = run_pipeline(ENV, get_secret, user, context, config)
     print("\nPipeline concluído:", result)
 
 
@@ -79,7 +82,7 @@ else:
     <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Metro GTFS</title>
+      <title>STCP GTFS</title>
       <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -193,7 +196,7 @@ else:
     <body>
 
       <header>
-        <h1>Metro GTFS</h1>
+        <h1>STCP GTFS</h1>
         <span id="ctxSpan">{{ context }}</span>
       </header>
 
@@ -334,7 +337,7 @@ else:
         config.TSTART = clts.getts()
 
         try:
-            result  = run_pipeline(ENV, get_secret, user, context)
+            result  = run_pipeline(ENV, get_secret, user, context, config)
             sys.stdout = old_out
             return jsonify({
                 "status":   "ok",

@@ -5,15 +5,6 @@ import numpy as np
 import pandas as pd
 import clts_pcp as clts  # type: ignore
 
-import config
-from config import (
-    INSERT_MODE,
-    TABLE_STOPS, TABLE_ROUTES, TABLE_TRIPS, TABLE_STOP_TIMES,
-    TABLE_SHAPES, TABLE_CALENDAR, TABLE_CALENDAR_DATES,
-    TABLE_AGENCY, TABLE_FARE_ATTRIBUTES, TABLE_FARE_RULES,
-    TABLE_STOPS_GEOJSON, TABLE_ROUTES_GEOJSON,
-)
-
 hostname = socket.gethostname()
 
 # InsertResult
@@ -34,7 +25,7 @@ class InsertResult:
 
 # Helpers: tamanho das tabelas
 
-def _get_crate_size(cur, table_name: str) -> None:
+def _get_crate_size(cur, table_name: str, config) -> None:
     try:
         cur.execute("SELECT sum(size) FROM sys.shards WHERE table_name = %s", (table_name,))
         row  = cur.fetchone()
@@ -45,7 +36,7 @@ def _get_crate_size(cur, table_name: str) -> None:
         print(f"  Não foi possível obter tamanho CrateDB '{table_name}': {e}")
 
 
-def _get_tidb_size(cur, table_name: str) -> None:
+def _get_tidb_size(cur, table_name: str, config) -> None:
     try:
         cur.execute("""
             SELECT (data_length + index_length)
@@ -60,7 +51,7 @@ def _get_tidb_size(cur, table_name: str) -> None:
         print(f"  Erro ao obter tamanho TiDB '{table_name}': {e}")
 
 
-def _get_mongo_size(collection, name: str) -> None:
+def _get_mongo_size(collection, name: str, config) -> None:
     try:
         stats      = collection.database.command("collStats", name)
         size_bytes = stats.get("storageSize", 0)
@@ -70,31 +61,40 @@ def _get_mongo_size(collection, name: str) -> None:
         print(f"  Não foi possível obter tamanho MongoDB '{name}': {e}")
 
 
-
 # Helpers: construção da lista de tabelas GTFS
-def _build_gtfs_table_list(tables: dict[str, pd.DataFrame]) -> list[tuple]:
+
+# mapping: config attribute -> (dict key, primary key)
+_GTFS_TABLE_DEFS = [
+    ("TABLE_STOPS",           "stops",           "stop_id"),
+    ("TABLE_ROUTES",          "routes",          "route_id"),
+    ("TABLE_TRIPS",           "trips",           "trip_id"),
+    ("TABLE_STOP_TIMES",      "stop_times",      ["trip_id", "stop_sequence"]),
+    ("TABLE_SHAPES",          "shapes",          ["shape_id", "shape_pt_sequence"]),
+    ("TABLE_CALENDAR",        "calendar",        "service_id"),
+    ("TABLE_CALENDAR_DATES",  "calendar_dates",  ["service_id", "date"]),
+    ("TABLE_AGENCY",          "agency",          "agency_id"),
+    ("TABLE_FARE_ATTRIBUTES", "fare_attributes", "fare_id"),
+    ("TABLE_FARE_RULES",      "fare_rules",      ["fare_id", "origin_id", "destination_id"]),
+    ("TABLE_FEED_INFO",       "feed_info",       "feed_publisher_name"),
+]
+
+def _build_gtfs_table_list(tables: dict[str, pd.DataFrame], config) -> list[tuple]:
     """
     Devolve lista de (nome_tabela, dataframe, chave_primária)
     no mesmo formato que a pipeline original.
+    Inclui apenas as tabelas presentes em config e carregadas.
     """
-    p = config.GTFS_PREFIX
-    return [
-        (TABLE_STOPS,           tables["stops"],           "stop_id"),
-        (TABLE_ROUTES,          tables["routes"],          "route_id"),
-        (TABLE_TRIPS,           tables["trips"],           "trip_id"),
-        (TABLE_STOP_TIMES,      tables["stop_times"],      ["trip_id", "stop_sequence"]),
-        (TABLE_SHAPES,          tables["shapes"],          ["shape_id", "shape_pt_sequence"]),
-        (TABLE_CALENDAR,        tables["calendar"],        "service_id"),
-        (TABLE_CALENDAR_DATES,  tables["calendar_dates"],  ["service_id", "date"]),
-        (TABLE_AGENCY,          tables["agency"],          "agency_id"),
-        (TABLE_FARE_ATTRIBUTES, tables["fare_attributes"], "fare_id"),
-        (TABLE_FARE_RULES,      tables["fare_rules"],      ["fare_id", "origin_id", "destination_id"]),
-    ]
+    result = []
+    for attr, key, pk in _GTFS_TABLE_DEFS:
+        if hasattr(config, attr) and key in tables:
+            result.append((getattr(config, attr), tables[key], pk))
+    return result
 
 
 # MongoDB
 def write_mongo(dbcreds: dict, tables: dict[str, pd.DataFrame],
-                stops_geojson: dict, routes_geojson: dict) -> InsertResult:
+                stops_geojson: dict, routes_geojson: dict,
+                config) -> InsertResult:
     from pymongo import MongoClient
     import ssl as _ssl
 
@@ -104,7 +104,7 @@ def write_mongo(dbcreds: dict, tables: dict[str, pd.DataFrame],
         f"@{dbcreds['dest_host']}/{dbcreds['database']}"
         f"?retryWrites=true&w=majority"
     )
-    
+
     ssl_ctx = _ssl.create_default_context()
     ssl_ctx.check_hostname  = False
     ssl_ctx.verify_mode     = _ssl.CERT_NONE
@@ -120,13 +120,13 @@ def write_mongo(dbcreds: dict, tables: dict[str, pd.DataFrame],
 
     total      = InsertResult()
     tstamp     = clts.getts()
-    gtfs_list  = _build_gtfs_table_list(tables)
+    gtfs_list  = _build_gtfs_table_list(tables, config)
 
     # Tabelas GTFS
     for (colname, df, key) in gtfs_list:
         collection = db[colname]
         print(f"\n  Processing {colname}...")
-        
+
         keys = key if isinstance(key, list) else [key]
 
         if len(keys) == 1:
@@ -160,8 +160,8 @@ def write_mongo(dbcreds: dict, tables: dict[str, pd.DataFrame],
 
     # Tabelas GeoJSON
     geojson_datasets = {
-        TABLE_STOPS_GEOJSON:  stops_geojson,
-        TABLE_ROUTES_GEOJSON: routes_geojson,
+        config.TABLE_STOPS_GEOJSON:  stops_geojson,
+        config.TABLE_ROUTES_GEOJSON: routes_geojson,
     }
     for uri, gj in geojson_datasets.items():
         collection = db[uri]
@@ -180,8 +180,9 @@ def write_mongo(dbcreds: dict, tables: dict[str, pd.DataFrame],
 # CrateDB
 
 def write_crate(dbcreds: dict, tables: dict[str, pd.DataFrame],
-                stops_geojson: dict, routes_geojson: dict) -> InsertResult:
-    from crate import client as crate_client 
+                stops_geojson: dict, routes_geojson: dict,
+                config) -> InsertResult:
+    from crate import client as crate_client
     from psycopg2.extras import execute_values
     import psycopg2
 
@@ -198,7 +199,7 @@ def write_crate(dbcreds: dict, tables: dict[str, pd.DataFrame],
 
     total      = InsertResult()
     BATCH_SIZE = 2000
-    gtfs_list  = _build_gtfs_table_list(tables)
+    gtfs_list  = _build_gtfs_table_list(tables, config)
 
     # Tabelas GTFS
     for (tablename, df, key) in gtfs_list:
@@ -228,13 +229,13 @@ def write_crate(dbcreds: dict, tables: dict[str, pd.DataFrame],
         res.inserted = inserted
         res.skipped  = skipped
         total       += res
-        _get_crate_size(cursor, tablename)
+        _get_crate_size(cursor, tablename, config)
         clts.elapt[f"  [crate] {tablename}: inserted {inserted}, skipped {skipped}"] = clts.deltat(config.TSTART)
 
     # Tabelas GeoJSON
     geojson_datasets = {
-        TABLE_STOPS_GEOJSON:  stops_geojson,
-        TABLE_ROUTES_GEOJSON: routes_geojson,
+        config.TABLE_STOPS_GEOJSON:  stops_geojson,
+        config.TABLE_ROUTES_GEOJSON: routes_geojson,
     }
     for uri, gj in geojson_datasets.items():
         cursor.execute(f"""
@@ -263,7 +264,7 @@ def write_crate(dbcreds: dict, tables: dict[str, pd.DataFrame],
 
 def write_tidb(dbcreds: dict, tables: dict[str, pd.DataFrame],
                stops_geojson: dict, routes_geojson: dict,
-               env: str, hostname_short: str) -> InsertResult:
+               env: str, hostname_short: str, config) -> InsertResult:
     import pymysql
 
     ssl_ca = "/etc/ssl/certs/ca-certificates.crt" if env in ("google_colab", "render") else "/etc/ssl/cert.pem"
@@ -281,7 +282,7 @@ def write_tidb(dbcreds: dict, tables: dict[str, pd.DataFrame],
 
     total     = InsertResult()
     BATCH     = 2000
-    gtfs_list = _build_gtfs_table_list(tables)
+    gtfs_list = _build_gtfs_table_list(tables, config)
 
     # Tabelas GTFS
     for (tablename, df, key) in gtfs_list:
@@ -302,18 +303,18 @@ def write_tidb(dbcreds: dict, tables: dict[str, pd.DataFrame],
             elif col in pk_cols:        col_defs.append(f"`{col}` VARCHAR(255)")
             else:                       col_defs.append(f"`{col}` TEXT")
         col_defs.append(f"PRIMARY KEY ({', '.join([f'`{k}`' for k in pk_cols])})")
-        
+
         create_sql = f"CREATE TABLE IF NOT EXISTS `{tablename}` ({', '.join(col_defs)})"
         cursor.execute(create_sql)
         conn.commit()
-        
+
         # insert com ON DUPLICATE KEY UPDATE : requer chave primária
-        # usa INSERT IGNORE para ignorar duplicados sem chave definida 
+        # usa INSERT IGNORE para ignorar duplicados sem chave definida
         cols = list(new_rows.columns)
         placeholders = ", ".join(["%s"] * len(cols))
         col_names = ", ".join([f"`{c}`" for c in cols])
         insert_sql = f"INSERT IGNORE INTO `{tablename}` ({col_names}) VALUES ({placeholders})"
-        
+
         values = [
             tuple(None if (v is not None and isinstance(v, float) and np.isnan(v)) else v for v in row)
             for _, row in new_rows.iterrows()
@@ -332,13 +333,13 @@ def write_tidb(dbcreds: dict, tables: dict[str, pd.DataFrame],
         res.inserted = inserted
         res.skipped  = skipped
         total       += res
-        _get_tidb_size(cursor, tablename)
+        _get_tidb_size(cursor, tablename, config)
         clts.elapt[f"  [tidb] {tablename}: inserted {inserted}, skipped {skipped}"] = clts.deltat(config.TSTART)
 
     # Tabelas GeoJSON
     geojson_datasets = {
-        TABLE_STOPS_GEOJSON:  stops_geojson,
-        TABLE_ROUTES_GEOJSON: routes_geojson,
+        config.TABLE_STOPS_GEOJSON:  stops_geojson,
+        config.TABLE_ROUTES_GEOJSON: routes_geojson,
     }
     for uri, gj in geojson_datasets.items():
         cursor.execute(f"""
@@ -366,13 +367,13 @@ def write_tidb(dbcreds: dict, tables: dict[str, pd.DataFrame],
 # Dispatcher
 def write_to_db(dbcreds: dict, tables: dict[str, pd.DataFrame],
                 stops_geojson: dict, routes_geojson: dict,
-                env: str, hostname_short: str) -> InsertResult:
+                env: str, hostname_short: str, config) -> InsertResult:
     dbms = dbcreds.get("dbms", "")
     if dbms == "mongodb":
-        return write_mongo(dbcreds, tables, stops_geojson, routes_geojson)
+        return write_mongo(dbcreds, tables, stops_geojson, routes_geojson, config)
     elif dbms == "crate":
-        return write_crate(dbcreds, tables, stops_geojson, routes_geojson)
+        return write_crate(dbcreds, tables, stops_geojson, routes_geojson, config)
     elif dbms == "tidb":
-        return write_tidb(dbcreds, tables, stops_geojson, routes_geojson, env, hostname_short)
+        return write_tidb(dbcreds, tables, stops_geojson, routes_geojson, env, hostname_short, config)
     else:
         raise ValueError(f"DBMS não suportado: '{dbms}'")
