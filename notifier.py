@@ -41,8 +41,8 @@ def _send_gmail(get_secret, user: str, subject: str, text: str, html: str, addre
     from email.mime.multipart import MIMEMultipart
     import smtplib
     import ssl as _ssl
-
-    raw = get_secret(get_secret(f"configGMail_{user}_json"))
+    
+    raw = get_secret(f"configGMail_{user}_json");
     if raw is None:
         raise ValueError(f"Credenciais Gmail em falta (get_secret(configGMail_{user}_json))")
     creds = json.loads(raw)
