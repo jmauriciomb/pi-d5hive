@@ -35,7 +35,10 @@ try:
 except Exception:
     ip = "unknown"
 
-user = get_secret("D5_USER") or get_secret("USER")
+try:
+    user = get_secret("D5_USER")  # because of MAC
+except Exception:
+    user = get_secret("USER")
 
 if ENV != "google_colab":
     import __main__
