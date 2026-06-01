@@ -5,10 +5,8 @@ pandas
 psycopg2-binary
 pymysql
 pymongo
-neo4j
 crate
 clts_pcp
 ipynbname
-psutil
-schedule
+certifi
 gunicorn
