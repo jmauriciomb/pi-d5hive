@@ -36,7 +36,7 @@ class InsertResult:
 
 def _get_crate_size(cur, table_name: str) -> None:
     try:
-        cur.execute("SELECT sum(size) FROM sys.shards WHERE table_name = ?", (table_name,))
+        cur.execute("SELECT sum(size) FROM sys.shards WHERE table_name = %s", (table_name,))
         row  = cur.fetchone()
         size = row[0] if row and row[0] is not None else 0
         print(f"  CrateDB '{table_name}': {size/1024:.4f} KB")

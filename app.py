@@ -2,8 +2,6 @@ import os
 import socket
 import datetime
 
-import config
-import clts_pcp as clts 
 
 from env_utils import detect_environment, ensure_packages, make_secret_getter
 
@@ -12,7 +10,7 @@ REQUIRED_PACKAGES = {
     "pandas":    "pandas",
     "pymysql":   "pymysql",
     "clts_pcp":  "clts_pcp",
-    "psycopg2":  "psycopg2",
+    "psycopg2":  "psycopg2-binary",
     "openpyxl":  "openpyxl",
     "pymongo":   "pymongo",
     "certifi":   "certifi",
@@ -21,11 +19,14 @@ REQUIRED_PACKAGES = {
 }
 ensure_packages(REQUIRED_PACKAGES)#Isto instala as packages todas necessárias
 
+import config
+import clts_pcp as clts 
+import requests
+
 ENV        = detect_environment()
 get_secret = make_secret_getter(ENV)
 print(f"Ambiente: {ENV}")
 
-import requests
 
 hostname       = socket.gethostname()
 hostname_short = hostname[:4]
@@ -34,7 +35,7 @@ try:
 except Exception:
     ip = "unknown"
 
-user = get_secret("USER")
+user = get_secret("D5_USER") or get_secret("USER")
 
 if ENV != "google_colab":
     import __main__
@@ -348,4 +349,6 @@ else:
             }), 500
 
     if __name__ == "__main__":
-        app.run(host="0.0.0.0", port=int(os.getenv("PORT", 5000)))
+        # em Mac a porta 5000 é usada pelo AirPlay Receiver
+        # app.run(host="0.0.0.0", port=int(os.getenv("PORT", 5000)))
+        app.run(host="0.0.0.0", port=int(os.getenv("PORT", 8080)))
