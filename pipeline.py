@@ -15,6 +15,7 @@ hostname_short = hostname[:4]
 
 def run_pipeline( env: str,get_secret, user: str, context: str) -> InsertResult:
     clts.setcontext(context)
+    clts.elapt.clear()
     clts.elapt["Setup OK"] = clts.deltat(config.TSTART)
     
     # 1. Download, extração e construção dos GeoJSONs
