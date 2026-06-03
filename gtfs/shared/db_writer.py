@@ -285,7 +285,7 @@ def write_tidb(dbcreds: dict, tables: dict[str, pd.DataFrame],
     gtfs_list = _build_gtfs_table_list(tables, config)
 
     # Tabelas GTFS
-    for (tablename, df, key) in gtfs_list:
+    for (tablename, df, key) in gtfs_list:        
         print(f"\n  Processing {tablename}...")
         new_rows = df.copy()
         new_rows["hostsource"] = hostname
@@ -337,27 +337,29 @@ def write_tidb(dbcreds: dict, tables: dict[str, pd.DataFrame],
         clts.elapt[f"  [tidb] {tablename}: inserted {inserted}, skipped {skipped}"] = clts.deltat(config.TSTART)
 
     # Tabelas GeoJSON
-    geojson_datasets = {
-        config.TABLE_STOPS_GEOJSON:  stops_geojson,
-        config.TABLE_ROUTES_GEOJSON: routes_geojson,
-    }
-    for uri, gj in geojson_datasets.items():
-        cursor.execute(f"""
-            CREATE TABLE IF NOT EXISTS `{uri}` (
-                uri     VARCHAR(200) NOT NULL,
-                geojson JSON NOT NULL,
-                PRIMARY KEY (uri)
-            )
-        """)
-        conn.commit()
-        cursor.execute(
-            f"INSERT INTO `{uri}` (uri, geojson) VALUES (%s, %s) "
-            f"ON DUPLICATE KEY UPDATE geojson = VALUES(geojson)",
-            (uri, json.dumps(gj, ensure_ascii=False)),
-        )
-        conn.commit()
-        clts.elapt[f"  [tidb] GeoJSON saved: {uri}"] = clts.deltat(config.TSTART)
-        print(f"GeoJSON guardado: {uri}")
+    # skipped for TiDB (row size limit, stored in MongoDB only)
+    
+    #geojson_datasets = {
+    #   config.TABLE_STOPS_GEOJSON:  stops_geojson,
+    #   config.TABLE_ROUTES_GEOJSON: routes_geojson,
+    #}
+    #for uri, gj in geojson_datasets.items():
+    #   cursor.execute(f"""
+    #        CREATE TABLE IF NOT EXISTS `{uri}` (
+    #            uri     VARCHAR(200) NOT NULL,
+    #           geojson JSON NOT NULL,
+    #           PRIMARY KEY (uri)
+    #       )
+    #   """)
+    #   conn.commit()
+    #   cursor.execute(
+    #       f"INSERT INTO `{uri}` (uri, geojson) VALUES (%s, %s) "
+    #       f"ON DUPLICATE KEY UPDATE geojson = VALUES(geojson)",
+    #       (uri, json.dumps(gj, ensure_ascii=False)),
+    #   )
+    #   conn.commit()
+    #   clts.elapt[f"  [tidb] GeoJSON saved: {uri}"] = clts.deltat(config.TSTART)
+    #   print(f"GeoJSON guardado: {uri}")
 
     cursor.close()
     conn.close()

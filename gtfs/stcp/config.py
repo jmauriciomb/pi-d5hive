@@ -14,6 +14,8 @@ TSTART         = None
 GTFS_PREFIX = "stcp_"
 GTFS_URL    = "https://opendata.porto.digital/dataset/5275c986-592c-43f5-8f87-aabbd4e4f3a4/resource/fdb8afe1-ee48-4b10-97a7-9ca8e52e099c/download/gtfs_feed.zip"
 
+OUTPUT_PATH = "output"
+
 # nome das tabelas
 TABLE_STOPS          = f"{GTFS_PREFIX}stops"
 TABLE_ROUTES         = f"{GTFS_PREFIX}routes"

@@ -14,6 +14,8 @@ TSTART         = None
 GTFS_PREFIX = "metro_"
 GTFS_URL    = "https://opendata.porto.digital/dataset/15f22603-a216-492a-ab1c-40b1d8aa2f08/resource/5e2b445d-b85b-4afb-9116-90b24327151c/download/horarios_gtfs_mdp_07_04_2026.zip"
 
+OUTPUT_PATH = "output"
+
 # nome das tabelas
 TABLE_STOPS           = f"{GTFS_PREFIX}stops"
 TABLE_ROUTES          = f"{GTFS_PREFIX}routes"
