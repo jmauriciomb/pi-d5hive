@@ -32,7 +32,7 @@ def _build_service_type_calendar(calendar: pd.DataFrame) -> pd.DataFrame:
         elif row["saturday"] == 1:
             return "saturday"
         elif row["sunday"] == 1:
-            return "domingo_feriados"
+            return "sunday_holidays"
         else:
             return "other"
     st = calendar[["service_id"]].copy()
@@ -48,7 +48,7 @@ def _build_service_type_calendar_dates(calendar_dates: pd.DataFrame) -> pd.DataF
         elif "SABADO" in s or "SÁBADO" in s:
             return "saturday"
         elif "DOMINGO" in s or "FERIADO" in s:
-            return "domingo_feriados"
+            return "sunday_holidays"
         else:
             return "other"
     st = calendar_dates[["service_id"]].drop_duplicates().copy()
