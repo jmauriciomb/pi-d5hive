@@ -152,6 +152,13 @@ def load_gtfs_tables(gtfs_folder: str, config) -> dict[str, pd.DataFrame]:
             print(f"  Ficheiro não encontrado (ignorado): {filename}")
             continue
         tables[key] = pd.read_csv(path)
+        
+        # fix: agency_id vem vazio (NaN)
+        if key == "agency" and "agency_id" in tables[key].columns:
+            tables[key]["agency_id"] = (
+                tables[key]["agency_id"].fillna(config.GTFS_PREFIX).astype(str)
+            )
+            
         if config.VERBOSE:
             print(f"  {key}: {len(tables[key])} linhas")
 
