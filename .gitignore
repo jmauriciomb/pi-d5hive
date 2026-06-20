@@ -5,6 +5,7 @@ __pycache__/
 .env
 secrets/
 output/
+old_files/
 
 
 .DS_Store

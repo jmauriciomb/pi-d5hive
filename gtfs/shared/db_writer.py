@@ -156,6 +156,7 @@ def write_mongo(dbcreds: dict, tables: dict[str, pd.DataFrame],
         res.inserted = len(docs)
         res.skipped  = skipped
         total    += res
+        _get_mongo_size(collection, colname, config)
         clts.elapt[f"  [mongodb] {colname}: inserted {len(docs)}, skipped {skipped}"] = clts.deltat(config.TSTART)
 
     # Tabelas GeoJSON
@@ -208,6 +209,21 @@ def write_crate(dbcreds: dict, tables: dict[str, pd.DataFrame],
         new_rows["hostsource"] = hostname
         new_rows["tstamp"]     = datetime.datetime.now()
         new_rows = new_rows.where(pd.notnull(new_rows), None)
+        
+        pk_cols = key if isinstance(key, list) else [key]
+        
+        col_defs = []
+        for col, dtype in new_rows.dtypes.items():
+            if "int"     in str(dtype): col_defs.append(f'"{col}" INTEGER')
+            elif "float" in str(dtype): col_defs.append(f'"{col}" DOUBLE PRECISION')
+            elif col == "tstamp":       col_defs.append(f'"{col}" TIMESTAMP')
+            else:                       col_defs.append(f'"{col}" TEXT')
+        pk_quoted = ", ".join([f'"{k}"' for k in pk_cols])
+        col_defs.append(f'PRIMARY KEY ({pk_quoted})')
+
+        create_sql = f'CREATE TABLE IF NOT EXISTS "{tablename}" ({", ".join(col_defs)})'
+        cursor.execute(create_sql)
+        conn.commit()
 
         cols     = list(new_rows.columns)
         values   = list(new_rows.itertuples(index=False, name=None))
