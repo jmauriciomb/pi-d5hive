@@ -1,0 +1,11 @@
+requests
+pandas
+pymysql
+clts_pcp
+crate
+openpyxl
+pymongo
+certifi
+dotenv
+gunicorn
+flask
