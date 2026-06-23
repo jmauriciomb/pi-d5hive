@@ -1,0 +1,10 @@
+.env
+.venv/
+venv/
+__pycache__/
+*.log
+*.pem
+data/
+output_water/
+.vscode/
+.ipynb_checkpoints/

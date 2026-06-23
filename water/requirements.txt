@@ -1,0 +1,9 @@
+python-dotenv
+requests
+pandas
+pymongo
+pymysql
+psycopg2-binary
+flask
+gunicorn
+certifi
